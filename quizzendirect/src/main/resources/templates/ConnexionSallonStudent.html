@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <meta charset="UTF-8">
+    <title>Quiz en direct</title>
+</head>
+<body>
+<link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+
+<script src="../callAPI.js" ></script>
+<script src="ConnexionSallonStudent.js" ></script>
+
+
+<!------ Include the above in your HEAD tag ---------->
+<style>
+
+
+
+</style>
+<script type="text/javascript">
+
+</script>
+
+<div class="container-fluid bg-info">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+
+            </div>
+            <form id="form_connex_salon_student" method="POST" action="ConnexionSalonStudent">
+                <div class="modal-body">
+                    <div class="" id="" data-toggle="buttons">
+                        <div class="form-group">
+                            <h3>ID du Salon (4 caractères) </h3>
+                            <!--<small style="color:red;" th:text="${erreur}"></small> -->
+                            <input pattern="[A-Za-z1-9]{4,4}" type="text" id="idSalon" name="idSalon" class="form-control">
+
+                            <h3>Votre pseudonyme </h3>
+                            <input pattern="[A-Za-z]{1,50}" type="text" name="pseudo" class="form-control">
+                        </div>
+                        <input class=" btn btn-lg btn-block btn-success" type="submit" value="Connexion au salon">
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>

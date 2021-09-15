@@ -1,0 +1,133 @@
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Gestions des questions</title>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <!-- <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script> -->
+    <script src="../callAPI.js" ></script>
+    <script src="../gestionQuestion.js" ></script>
+
+    <link type="text/css" href="../gestionQuestion.css" rel="stylesheet">
+</head>
+<body>
+
+<!--- ********************************************************************************************************************** -->
+<!-- Modal: modalAbandonedCart-->
+<div class="modal fade right" id="CreationRep" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="false">
+    <div class="modal-dialog modal-side modal-bottom-right modal-notify modal-info" role="document">
+        <!--Content-->
+        <div class="modal-content">
+            <!--Header-->
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true" class="white-text">&times;</span>
+                </button>
+                <div class="md-form">
+                    <label for="NomRepertoire">Nom du répertoire</label>
+                    <input type="text" id="NomRepertoire" class="md-textarea form-control" rows="3" placeholder="Entrer un repertoire "/>
+                </div>
+                <button type="submit" id="modalRep" class="btn btn-info" style="float: right;margin-top: 10px;">Créer repertoire</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!--- ********************************************************************************************************************** -->
+
+<!-- Modal: Pour les Questions -->
+<div class="modal fade right" id="modalPoll-1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+     aria-hidden="true" data-backdrop="false">
+    <div class="modal-dialog modal-full-height modal-right modal-notify modal-info" role="document">
+        <div class="modal-content">
+            <!--Header-->
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true" class="white-text">×</span>
+                </button>
+                <p class="heading lead" style="color: #00415d;" id="NomRepertoiremodal" required="required"></p>
+            </div>
+            <!--Body-->
+            <div class="modal-body">
+                <div class="text-center">
+                    <i class="far fa-file-alt fa-4x mb-3 animated rotateIn"></i>
+                    <p>
+                        <strong class="heading lead" style="color: #00415d;">Intitulé de la question :</strong>
+                        <input type="text" id="enonceQuestion" placeholder="Question" style="width: 100%;"  required="required"/>
+                </div>
+                <hr>
+                <label>Type de la question</label><br>
+                <select id="TypeChoix">
+                    <option value="unique" checked >Unique</option>
+                    <option value="multiple">Multiple</option>
+                </select>
+                <!-- Radio -->
+                <p>
+                    <strong>Réponses possibles : Cocher la bonne réponse </strong>
+                </p>
+                <div class="form-check mb-4">
+                    <input class="form-check-input" name="group1" type="radio" id="radio-179" value="option1" checked>
+                    <label class="form-check-label" for="radio-179" style="width: 95%;" ><input type="text" id="Choix1" placeholder="Reponse A" style="width:100%;"  required="required"></label>
+                </div>
+
+                <div class="form-check mb-4">
+                    <input class="form-check-input" name="group1" type="radio" id="radio-279" value="option2">
+                    <label class="form-check-label" for="radio-279" style="width: 95%;" ><input type="text" id="Choix2"placeholder="Reponse B" style="width:100%;"  required="required"></label>
+                </div>
+
+                <div class="form-check mb-4">
+                    <input class="form-check-input" name="group1" type="radio" id="radio-379" value="option3">
+                    <label class="form-check-label" for="radio-379" style="width: 95%;" ><input type="text" id="Choix3" placeholder="Reponse C" style="width:100%;"  required="required"></label>
+                </div>
+                <div class="form-check mb-4">
+                    <input class="form-check-input" name="group1" type="radio" id="radio-479" value="option4" >
+                    <label class="form-check-label" for="radio-479" style="width: 95%;" ><input type="text" id="Choix4" placeholder="Aucune des réponses" style="width:100%;"  required="required"></label>
+                </div>
+
+            </div>
+
+            <!--Footer-->
+            <div class="modal-footer justify-content-center">
+                <a type="button" class="btn btn-primary waves-effect waves-light" id="AjoutQuestion">Ajouter
+                    <i class="fa fa-paper-plane ml-1"></i>
+                </a>
+                <a type="button" class="btn btn-primary waves-effect waves-light" id="ModifierQuestion">Modifer
+                    <i class="fa fa-paper-plane ml-1"></i>
+                </a>
+                <a type="button" class="btn btn-outline-primary waves-effect" data-dismiss="modal">Cancel</a>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal: modalPoll -->
+
+<!--- ********************************************************************************************************************** -->
+
+    <nav class="navbar navbar-expand-sm bg-primary navbar-dark">
+        <ul class="navbar-nav">
+            <li class="nav-item">
+                <a class="nav-link" href="/connection">Hub</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">Gestion questions</a>
+            </li>
+            <li class="nav-item active">
+                <a class="nav-link" href="/creationSalon">Création salon</a>
+            </li>
+        </ul>
+    </nav>
+    <div class="container">
+        <button type="button" class="btn btn-lg btn-primary btn-create" data-toggle="modal" data-target="#CreationRep" id="CreationRepertoire">+ Repertoire Question</button>
+        <div class="row">
+
+        </div>
+    </div>
+
+
+</body>
+
+
+
+</html>

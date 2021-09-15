@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Quizz en direct</title>
+
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+    <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+
+    <link type="text/css" rel="stylesheet" href="comptePage.css"/>
+    <script type="text/javascript" src="callAPI.js"></script>
+
+    <script type="text/javascript" src="comptePage.js"></script>
+
+</head>
+
+
+<body>
+<div class="container">
+    <div class="row">
+        <div class="col-md-6 col-md-offset-3">
+            <center><h1 class="text-primary">Quizz En Direct</h1></center>
+
+            <div class="panel panel-login">
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <a href="#" class="active" id="login-form-link">S'Identifier</a>
+                        </div>
+                        <div class="col-xs-6">
+                            <a href="#" id="register-form-link">Creer un Compte</a>
+                        </div>
+                    </div>
+                    <hr>
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <form id="login-form" action="#" th:action="@{/login}" th:object="${user}" method="post" role="form"
+                                  style="display: block;">
+                                <!--<small th:text="${errorLogin}"></small>-->
+                                <div class="form-group">
+                                    <input type="email" name="login-email" id="login-email" class="form-control" placeholder="Email" value="" th:field="*{email}" required>
+                                </div>
+                                <div class="form-group">
+                                    <input type="password" name="login-password" id="login-password" class="form-control" placeholder="Mot de passe" th:field="*{passwd}" required>
+                                </div>
+                                <div class="form-group">
+                                    <div class="row">
+                                        <div class="col-sm-6 col-sm-offset-3">
+                                            <input type="submit" name="login-submit" id="login-submit" class="form-control btn btn-login" value="Connexion">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="row">
+                                        <div class="col-lg-12">
+                                            <div class="text-center">
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                            <form id="register-form" action="#" th:action="@{/register}" th:object="${user}" method="post" role="form"
+                                  style="display: none;">
+                                <div class="form-group">
+                                    <input type="text" pattern="[A-Za-z ]{1,}"
+                                           name="register-prenom" id="register-prenom" class="form-control" placeholder="Prenom" th:field="*{prenom}" required>
+                                </div>
+                                <div class="form-group">
+                                    <input type="text" pattern="[A-Za-z ]{1,}"
+                                           name="register-name" id="register-name" class="form-control" placeholder="Nom" th:field="*{name}" required>
+                                </div>
+                                <div class="form-group">
+
+                                    <input type="email" name="register-email" id="register-email" class="form-control" placeholder="Email" th:field="*{email}" required>
+                                </div>
+                                <div class="form-group">
+                                    <input type="password" name="register-password" id="register-password" class="form-control" placeholder="Mot de passe" th:field="*{passwd}" required>
+                                </div>
+                                <div class="form-group">
+                                    <input type="password" name="register-confirm-password" id="register-confirm-password" class="form-control" placeholder="Confirmer mot de passe" required>
+                                </div>
+                                <div class="form-group">
+                                    <div class="row">
+                                        <div class="col-sm-6 col-sm-offset-3">
+
+                                            <input name="register-submit" id="register-submit" class="form-control btn btn-register" value="Creer le compte">
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Quiz en direct</title>
+    <link type="text/css" href="../quiz.css" rel="stylesheet">
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+    <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+    <!--<script th:inline="javascript">
+        /*<![CDATA[*/
+        var questions = [[${info.questions}]];
+        var reponses = [[${info.reponses}]];
+        /*]]>*/
+    </script>
+-->
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/stomp-websocket@2.3.4-next/lib/stomp.min.js"></script>
+
+
+    <script src="../Quiz.js" th:inline="javascript" ></script>
+
+</head>
+<body>
+<div class="container-fluid bg-info">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>
+                    <span class="label label-warning" id="qid">1</span>
+                    <span id="enonce"></span>
+                    <span id="timer" class="label label-info" style="float:right;"></span>
+                </h3>
+            </div>
+            <div class="modal-body">
+                <div class="col-xs-3 col-xs-offset-5">
+                    <div id="loadbar" style="display: none;">
+                        <div class="blockG" id="rotateG_01"></div>
+                        <div class="blockG" id="rotateG_02"></div>
+                        <div class="blockG" id="rotateG_03"></div>
+                        <div class="blockG" id="rotateG_04"></div>
+                        <div class="blockG" id="rotateG_05"></div>
+                        <div class="blockG" id="rotateG_06"></div>
+                        <div class="blockG" id="rotateG_07"></div>
+                        <div class="blockG" id="rotateG_08"></div>
+                    </div>
+                </div>
+                <!--
+                                <div class="quiz" id="quiz2q" data-toggle="buttons" style="display: none;" >
+                                    <label class="element-animation1 btn btn-lg btn-primary btn-block" th:text="${info.reponses.get(0)}" ><span class="btn-label"><i class="glyphicon glyphicon-chevron-right"></i></span> <input type="radio" name="q_answer" value="1">Réponse 1</label>
+                                    <label class="element-animation2 btn btn-lg btn-primary btn-block" th:text="${info.reponses.get(1)}"><span class="btn-label"><i class="glyphicon glyphicon-chevron-right"></i></span> <input type="radio" name="q_answer" value="2" >Réponse 2</label>
+                                </div>
+                -->
+                <div class="quiz" id="quiz" data-toggle="buttons" >
+                    <label class="reponse element-animation1 btn btn-lg btn-primary btn-block" >
+                        <span class="btn-label">
+                            <i class="glyphicon glyphicon-chevron-right"></i>
+                        </span>
+                        <input type="radio" name="q_answer" value="1"/>
+                        <span id="proposition1" ></span>
+                    </label>
+                    <label class="reponse element-animation2 btn btn-lg btn-primary btn-block" >
+                        <span class="btn-label">
+                            <i class="glyphicon glyphicon-chevron-right"></i>
+                        </span>
+                        <input type="radio" name="q_answer" value="2" />
+                        <span id="proposition2"></span>
+                    </label>
+                    <label class="reponse element-animation3 btn btn-lg btn-primary btn-block" >
+                        <span class="btn-label">
+                            <i class="glyphicon glyphicon-chevron-right"></i>
+                        </span>
+                        <input type="radio" name="q_answer" value="3" />
+                        <span id="proposition3"></span>
+                    </label>
+                    <label class="reponse element-animation4 btn btn-lg btn-primary btn-block">
+                        <span class="btn-label">
+                            <i class="glyphicon glyphicon-chevron-right"></i>
+                        </span>
+                        <input type="radio" name="q_answer" value="4" />
+                        <span id="proposition4"></span>
+                    </label>
+                </div>
+            </div>
+            <div class="modal-footer text-muted">
+
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

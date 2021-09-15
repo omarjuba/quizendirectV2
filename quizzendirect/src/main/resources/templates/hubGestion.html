@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <title>Quiz en direct</title>
+
+        <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+        <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+        <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+
+        <link type="text/css" rel="stylesheet" href="hubGestion.css"/>
+        <script type="text/javascript" src="hubGestion.js"></script>
+    </head>
+
+    <body>
+        <div class="container-fluid bg-info">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 th:text="'Bienvenue '+ ${user.getName()}"> Bienvenue </h3>
+                    </div>
+                    <div class="modal-body">
+                        <div class="col-xs-3 col-xs-offset-5">
+                            <div id="loadbar" style="display: none;">
+                                <div class="blockG" id="rotateG_01"></div>
+                                <div class="blockG" id="rotateG_02"></div>
+                                <div class="blockG" id="rotateG_03"></div>
+                                <div class="blockG" id="rotateG_04"></div>
+                                <div class="blockG" id="rotateG_05"></div>
+                                <div class="blockG" id="rotateG_06"></div>
+                                <div class="blockG" id="rotateG_07"></div>
+                                <div class="blockG" id="rotateG_08"></div>
+                            </div>
+                        </div>
+
+                        <div class="quiz" id="quiz" data-toggle="buttons">
+                            <label onclick="window.location.href='/creationSalon';"
+                                   class="element-animation1 btn btn-lg btn-info btn-block">
+                                <span class="btn-label"><i class="glyphicon glyphicon-chevron-right"></i></span>
+                                <input type="radio" name="q_answer" value="1">Créer un salon
+                            </label>
+                            <label onclick="window.location.href='/GestionQuestions';"
+                                   class="element-animation2 btn btn-lg btn-warning btn-block">
+                                <span class="btn-label"><i class="glyphicon glyphicon-chevron-right"></i></span>
+                                <input type="radio" name="q_answer" value="2">Gérer vos questions
+                            </label>
+                            <label onclick="window.location.href='/ConnexionSalonStudent';"
+                                   class="element-animation3 btn btn-lg btn-success btn-block"><span class="btn-label">
+                                <i class="glyphicon glyphicon-chevron-right"></i></span>
+                                <input type="radio" name="q_answer" value="3">Vous connecter à un quiz
+                            </label>
+
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <form action="/disconnection" method="post">
+                            <button class="btn btn-danger"> Déconnexion </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

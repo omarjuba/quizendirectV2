@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="fr" > <!--xmlns:th="http://www.thymeleaf.org"> -->
+<head>
+    <meta charset="UTF-8">
+    <title>Création d'un salon</title>
+
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="callAPI.js" ></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/stomp-websocket@2.3.4-next/lib/stomp.min.js"></script>
+    <link type="text/css" rel="stylesheet" href="creationSalon.css"/>
+</head>
+<body>
+
+
+<!-- Modal -->
+<div  id="modalStat" class="modal">
+    <div id="contenu">
+        <div id="bodyModals">
+
+        </div>
+        <button id="closeModalStat" class="btn-danger">close</button>
+    </div>
+
+
+</div>
+
+    <div class="vertical-line"></div>
+    <nav class="navbar navbar-expand-sm bg-primary navbar-dark">
+        <ul class="navbar-nav">
+            <li class="nav-item">
+                <a class="nav-link" href="/connection">Hub</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/GestionQuestions">Gestion questions</a>
+            </li>
+            <li class="nav-item active">
+                <a class="nav-link" href="#">Création salon</a>
+            </li>
+        </ul>
+    </nav>
+    <div class="left-container">
+        <ul class="repertoires panel-group">
+<!--            <li class="panel panel-primary">-->
+<!--                <div class="repertoire panel-heading">Répertoire 1</div>-->
+<!--                <ul class="questions hide panel-body">-->
+<!--                    <li class="question">-->
+<!--                        <div class="response-time hide">10</div>-->
+<!--                        <div class="quest">Question 1A</div>-->
+<!--                        <button class="button-ajouter btn btn-lg btn-info btn-block">Ajouter</button>-->
+<!--                    </li>-->
+<!--                    <li class="question">-->
+<!--                        <div class="response-time hide">10</div>-->
+<!--                        <div class="quest">Question 1B</div>-->
+<!--                        <button class="button-ajouter btn btn-lg btn-info btn-block">Ajouter</button>-->
+<!--                    </li>-->
+<!--                    <li class="question">-->
+<!--                        <div class="response-time hide">10</div>-->
+<!--                        <div class="quest">Question 1C</div>-->
+<!--                        <button class="button-ajouter btn btn-lg btn-info btn-block">Ajouter</button>-->
+<!--                    </li>-->
+<!--                </ul>-->
+<!--            </li>-->
+        </ul>
+    </div>
+    <div class="right-container sortable">
+        <div>
+            <button id="connect" class="button-demarrer btn btn-lg btn-primary btn-create">Ouvrir le salon</button>
+            <button id="disconnect" class="button-fermer btn btn-lg btn-primary btn-create hide">Fermer le salon</button>
+
+        </div>
+        <div class="code-acces panel panel-success hide"></div>
+        <ul class="selected-questions panel-group">
+
+        </ul>
+        <div>
+            <button class="button-supprAll btn btn-lg btn-danger btn-create hide">Supprimer toutes les questions</button>
+        </div>
+    </div>
+
+
+
+
+<script type="text/javascript" src="creationSalon.js"></script>
+
+</body>
+</html>

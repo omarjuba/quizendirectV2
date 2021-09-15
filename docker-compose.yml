@@ -1,0 +1,21 @@
+version: "2"
+services:
+  api:
+    build:
+      context: ./QuizzAPI
+    ports:
+     - 20020:20020
+  frontapp:
+    build:
+      context: ./quizzendirect
+    ports:
+     - 8081:8081
+  proxy:
+    image: nginx
+    volumes:
+      - ./conf.d/nginx/nginx.conf:/etc/nginx/conf.d/default.conf
+      - ./conf.d/nginx/proxy_params:/etc/nginx/proxy_params
+
+    ports: 
+      - 80:80
+
