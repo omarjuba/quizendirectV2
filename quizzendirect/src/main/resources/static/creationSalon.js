@@ -299,6 +299,7 @@ $(document).on("click", ".button-stat", function () {
     });
 })
 
+//commmentaire test
 function afficherStat(question){
     var stats="";
     var i=0;
