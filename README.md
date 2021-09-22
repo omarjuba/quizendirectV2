@@ -3,7 +3,7 @@
 	Nécessite docker et docker-compose
 
 ## 0) Récupérer les sources du projet
-	git clone https://github.com/quizzendirect-dev/quizzendirect.git
+	git clone https://github.com/omarjuba/quizendirectV2.git
 
 
 ## 1) modifier son fichier host
@@ -40,7 +40,7 @@
 		chmod +x /usr/local/bin/docker-compose
 
 ## 1) Récupérer les sources du projet
-	git clone https://github.com/quizzendirect-dev/quizzendirect.git
+	git clone https://github.com/omarjuba/quizendirectV2.git
 	cd quizzendirect
 
 ## 2) Lancer le docker-compose
