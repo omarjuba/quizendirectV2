@@ -24,6 +24,7 @@ var boolQuery = true;
     });
 })();
 
+var numero_question = 1;
 
 function getQuestion(question) {
 
@@ -33,8 +34,11 @@ function getQuestion(question) {
     $("#quiz").fadeIn();
 
     /* Remplis les informations des questions */
+	$("#qid").html(numero_question);
     $("#enonce").html(question.intitule);
     $("#timer").html(question.time);
+
+	numero_question = ++numero_question;
 
     /* Récupére toutes les réponses (bonnes et mauvaises) dans un tableau de propositions */
     var propositions = (question.reponsesBonnes).concat(question.reponsesFausses);
