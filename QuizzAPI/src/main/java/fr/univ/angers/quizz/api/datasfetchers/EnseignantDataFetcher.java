@@ -48,9 +48,12 @@ public class EnseignantDataFetcher {
             return "";
         };
     }
-
+   
     public DataFetcher<Object> getEnseignantVerification() {
+    	
         return dataFetchingEnvironment -> {
+        	
+        	
             Enseignant enseignant = enseignantRepository.findByMail(dataFetchingEnvironment.getArgument("mail"));
             if (enseignant != null) {
                 if (dataFetchingEnvironment.getArgument("mdp").equals(enseignant.getMotdepasse())) {
