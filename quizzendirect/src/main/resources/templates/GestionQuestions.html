@@ -8,6 +8,10 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
     <!-- <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script> -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/quill/1.3.7/quill.min.js" integrity="sha512-P2W2rr8ikUPfa31PLBo5bcBQrsa+TNj8jiKadtaIrHQGMo6hQM6RdPjQYxlNguwHz8AwSQ28VkBK6kHBLgd/8g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/quill/1.3.7/quill.bubble.css" integrity="sha512-mLecVYo2QWbbYIF2u/ppRT91u615n044kBhrGzqbKQRRQxBUj8BR5b+z9qQsUNyWVYr8Z+c/TISuI7cnbpqpWg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/quill/1.3.7/quill.snow.css" integrity="sha512-XMxqcAfuPHOh2Kz0Z3oDynUcLgyKP6B1NCKUTxyVbM02u1ZrygDcLddKw7KpN/SGmdw8raHbKgaIHP7+bEfGYw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+        
     <script src="../callAPI.js" ></script>
     <script src="../gestionQuestion.js" ></script>
 
@@ -53,9 +57,12 @@
             <div class="modal-body">
                 <div class="text-center">
                     <i class="far fa-file-alt fa-4x mb-3 animated rotateIn"></i>
-                    <p>
-                        <strong class="heading lead" style="color: #00415d;">Intitulé de la question :</strong>
-                        <input type="text" id="enonceQuestion" placeholder="Question" style="width: 100%;"  required="required"/>
+                    
+                        <!--  <strong class="heading lead" style="color: #00415d;">Intitulé de la question :</strong>-->
+                       <!--  <input type="text" id="enonceQuestion" placeholder="Question" style="width: 100%;"  required="required"/>  -->
+                		<div id ="editeurQuill-enonce">
+                			<script src ="../EditeurQuill.js"></script>
+                		</div>
                 </div>
                 <hr>
                 <label>Type de la question</label><br>
