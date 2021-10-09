@@ -85,7 +85,7 @@ public class QuestionDataFetcher {
                 if (((int) dataFetchingEnvironment.getArgument("time")) <= 0)
                     return new Error("createQuestion", "INVALID_ARG", "Erreur : Le temps de réponse à la question que vous avez saisi : '" + dataFetchingEnvironment.getArgument("time") + "' secondes, n'est pas correct.");
 
-
+                //récupérer les questions dans le répertoire
                 List<Question> questions = repertoire.getQuestions();
                 for (Question question : questions) {
                     if (dataFetchingEnvironment.getArgument("intitule").equals(question.getIntitule()) && dataFetchingEnvironment.getArgument("choixUnique").equals(question.isChoixUnique()) && dataFetchingEnvironment.getArgument("reponsesBonnes").equals(question.getReponsesBonnes()) && dataFetchingEnvironment.getArgument("reponsesFausses").equals(question.getReponsesFausses()) && dataFetchingEnvironment.getArgument("time").equals(question.getTime()))

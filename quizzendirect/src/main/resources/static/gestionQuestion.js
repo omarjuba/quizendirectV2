@@ -123,6 +123,7 @@ function getQuestionByrepertoire(data,userId_ens,nomrepository) {
 }
 
 function enregistrementQuestion(enonce,choix,reponseBonnes,reponseFausses,time, nomRepertoire) {
+	
     let token = getCookie("token")
     let enregistrementQuestion = "mutation{\n" +
         "  createQuestion(token : \""+ token +"\" , nomRepertoire: \""+ nomRepertoire+"\" intitule:\"" + manageDoubleQuote(enonce) + "\",choixUnique:"+choix+",reponsesBonnes:["+reponseBonnes+"],reponsesFausses:["+reponseFausses+"],time:"+time+"){\n" +
@@ -283,8 +284,13 @@ function manageDoubleQuote(stringToManage) {
 /***********************Gestion evénements clique sur la page *******************************/
 $(document).on('click','#AjoutQuestion',function () {
     let enonce = $("#enonceQuestion").val().toString();
-    let choix = true;
-    if( $('#TypeChoix').val().toString() == "multiple") choix = false;
+    let choix = 0;
+    if( $('#TypeChoix').val().toString() == "multiple") {
+		choix = 1;
+	} else if ($('#TypeChoix').val().toString() == "ouverte") {
+		choix = 2;
+	}
+	console.log(choix); // pour tester
     let answerschecked =  $('input:checked').map(function (){ return $(this).val();}).get();
     let reponsesFausse = [];
     let reponsesBonnes = [];
@@ -342,9 +348,12 @@ $(document).on('click','#AjoutQuestion',function () {
 
 $(document).on('click','#ModifierQuestion',function () {
     let enonce = $("#enonceQuestion").val().toString();
-    let choix = true;
-    if( $('#TypeChoix').val().toString() === "multiple") choix = false;
-
+    let choix = 0;
+    if( $('#TypeChoix').val().toString() === "multiple") {
+		choix = 1;
+	} else if ($('#TypeChoix').val().toString() === "ouverte") {
+		choix = 2;
+	}
     let answerschecked =  $('input:checked').map(function (){ return $(this).val();}).get();
     let reponsesFausse = [];
     let reponsesBonnes = [];

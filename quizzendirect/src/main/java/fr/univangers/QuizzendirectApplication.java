@@ -12,8 +12,6 @@ public class QuizzendirectApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(QuizzendirectApplication.class, args);
 	}
-
-
 }
 
 
