@@ -16,22 +16,29 @@
 -->
     <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/stomp-websocket@2.3.4-next/lib/stomp.min.js"></script>
+	
+	<!-- necessaire pour QuillJs -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/quill/1.3.7/quill.min.js" integrity="sha512-P2W2rr8ikUPfa31PLBo5bcBQrsa+TNj8jiKadtaIrHQGMo6hQM6RdPjQYxlNguwHz8AwSQ28VkBK6kHBLgd/8g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/quill/1.3.7/quill.bubble.css" integrity="sha512-mLecVYo2QWbbYIF2u/ppRT91u615n044kBhrGzqbKQRRQxBUj8BR5b+z9qQsUNyWVYr8Z+c/TISuI7cnbpqpWg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/quill/1.3.7/quill.snow.css" integrity="sha512-XMxqcAfuPHOh2Kz0Z3oDynUcLgyKP6B1NCKUTxyVbM02u1ZrygDcLddKw7KpN/SGmdw8raHbKgaIHP7+bEfGYw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+	
 
-
-    <script src="../Quiz.js" th:inline="javascript" ></script>
+    <script src="../Quiz.js" th:inline="javascript" defer></script>
 
 </head>
 <body>
+
 <div class="container-fluid bg-info">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h3>
+			    <h3>   
                     <span class="label label-warning" id="qid"></span>
-                    <span id="enonce"></span>
                     <span id="timer" class="label label-info" style="float:right;"></span>
                 </h3>
+                <div id="enonce"></div>
             </div>
+             
             <div class="modal-body">
                 <div class="col-xs-3 col-xs-offset-5">
                     <div id="loadbar" style="display: none;">

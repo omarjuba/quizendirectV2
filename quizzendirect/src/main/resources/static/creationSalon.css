@@ -238,6 +238,12 @@ body{
     box-shadow: none;
 }
 
+.intitule {
+	border: 1px solid black;
+	max-height:70px;
+	max-width:100%;
+	overflow:hidden;
+}
 #modalStat{
     display: none;
   position: fixed;

@@ -132,7 +132,7 @@
 
 button
 {
-	max-height: 80px;
+	max-height: 70px;
 	max-width: 500px;
 	overflow:hidden;
 	text-overflow: ellipsis;

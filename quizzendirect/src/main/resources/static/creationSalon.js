@@ -37,10 +37,12 @@ function afficherRepertoires(data, userId_ens) {
                     "        <li class=\"question\">" +
                     "            <input class='id_quest' type='hidden' value='" + data.repertoires[j].questions[k].id_quest + "'>" +
                     "            <div class=\"response-time hide\">" + data.repertoires[j].questions[k].time + "</div>" +
-                    "            <div class=\"quest\">" + data.repertoires[j].questions[k].intitule + "</div>" +
+                    "            <div class=\"quest intitule\ id=question"+k+"\">" + data.repertoires[j].questions[k].intitule + "</div>" +
                     "            <button class=\"button-ajouter btn btn-lg btn-info btn-block\">Ajouter</button>" +
                     "        </li>"
-            }
+                   
+                }
+            
             stringRepertoire +=
                 "        </ul>" +
                 "    </li>"
@@ -48,6 +50,9 @@ function afficherRepertoires(data, userId_ens) {
         }
     }
 }
+
+ 
+
 
 function getCookie(name) {
     if (document.cookie.length == 0) return null;
@@ -70,13 +75,14 @@ $(document).on("click", ".repertoire", function () {
 });
 
 $(document).on("click", ".button-ajouter", function () {
-    let intituleQuestion = $(this).parent().find(".quest").text();
+    let intituleQuestion = $(this).parent().find(".quest").text(); //besoin de changer, affichage moche quand balise html sont dans l'intitule de la question
     let id_quest = $(this).parent().find(".id_quest").val();
     $(this).css("display", "none")
     if ($(document).find(".selected-question").length > 0) {
         let lastSelectedQuestion = $(document).find(".selected-question").last()
         lastSelectedQuestion.find(".button-down").toggleClass("disabled")
     }
+    console.log(intituleQuestion);
     let stringQuestion =
         "   <li class=\"selected-question panel panel-primary\">" +
         "       <div class=\"time-line\"></div>" +

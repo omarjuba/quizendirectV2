@@ -46,7 +46,6 @@ $(document).ready(function () {
         "   }" +
         "}" +
         "}"
-	console.log(query);
     const donnees = callAPI(query)
     donnees.then((object) => {
 		console.log(object);
@@ -98,6 +97,7 @@ function questionadded(id_rep,questions,enonce,choix,reponseBonnes,reponseFausse
         '     }' +
         '   }' +
         ' }'
+	console.log("question added\n",query);
     const donnee =  callAPI(query);
 }
 function getIdRepertory(data,userId_ens,nomrepository){
@@ -125,6 +125,7 @@ function getQuestionByrepertoire(data,userId_ens,nomrepository) {
     return [];
 }
 
+//Creation de la question dans la BDD
 function enregistrementQuestion(enonce,choix,reponseBonnes,reponseFausses,time, nomRepertoire) {
     let token = getCookie("token")
     let enregistrementQuestion = "mutation{\n" +
@@ -135,6 +136,7 @@ function enregistrementQuestion(enonce,choix,reponseBonnes,reponseFausses,time, 
         "}" +
         "}\n" +
         "}"
+	console.log(enregistrementQuestion);
     callAPI(enregistrementQuestion);
 }
 
@@ -282,15 +284,14 @@ function isGoodForm(){
 
 //ne fait plus rien maintenant car le code est du html
 function manageDoubleQuote(stringToManage) {
-    
-	console.log(stringToManage);
+    	
 	return stringToManage.replaceAll("\\", "\\\\").replaceAll('"', '\\\"')
 	
 }
 
 /***********************Gestion evénements clique sur la page *******************************/
 $(document).on('click','#AjoutQuestion',function () {
-    let enonce = document.getElementById("editeurQuill-enonce").firstChild.innerHTML;
+    let enonce = document.getElementById("editeurQuill-enonce").firstChild.innerHTML.replace("\n",'');
     let choix = true;
     if( $('#TypeChoix').val().toString() == "multiple") choix = false;
     let answerschecked =  $('input:checked').map(function (){ return $(this).val();}).get();
@@ -350,7 +351,7 @@ $(document).on('click','#AjoutQuestion',function () {
 });
 
 $(document).on('click','#ModifierQuestion',function () {
-    let enonce = document.getElementById("editeurQuill-enonce").firstChild.innerHTML;
+    let enonce = document.getElementById("editeurQuill-enonce").firstChild.innerHTML.replace("\n",'');
 	console.log(enonce);
     let choix = true;
     if( $('#TypeChoix').val().toString() === "multiple") choix = false;
@@ -402,7 +403,7 @@ $(document).on('click','#ModifierQuestion',function () {
             "    }\n" +
             "\t}\n" +
             "}"
-
+		console.log("modification : \n",updateQuery)
         callAPI(updateQuery);
 
         let nomRepertoire = $('#NomRepertoiremodal')[0].innerHTML;

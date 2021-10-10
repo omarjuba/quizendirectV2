@@ -35,7 +35,14 @@ function getQuestion(question) {
 
     /* Remplis les informations des questions */
 	$("#qid").html(numero_question);
-    $("#enonce").html(question.intitule);
+    console.log(question.intitule);
+       //creation du conteur QUill JS en lecture seulement
+       let quillLectire = new Quill('#enonce', {
+        theme: 'bubble',
+        readOnly: true
+    });
+    document.getElementById("enonce").firstChild.innerHTML=question.intitule;
+    //$("#enonce").html(question.intitule);
     $("#timer").html(question.time);
 
 	numero_question = ++numero_question;
