@@ -48,11 +48,13 @@ $(document).ready(function () {
         "}"
     const donnees = callAPI(query)
     donnees.then((object) => {
+		console.log(object);
         afficherRepertoires(object.data.getEnseignantById, userId_ens)
     });
 })
 
 function afficherRepertoires(data, userId_ens){
+	console.log(data);
     if(data.id_ens == userId_ens){
         for(let j = 0; j < data.repertoires.length; j++){
             ajouterRepertoire(data.repertoires[j].nom);
@@ -95,6 +97,7 @@ function questionadded(id_rep,questions,enonce,choix,reponseBonnes,reponseFausse
         '     }' +
         '   }' +
         ' }'
+	console.log("question added\n",query);
     const donnee =  callAPI(query);
 }
 function getIdRepertory(data,userId_ens,nomrepository){
@@ -122,6 +125,7 @@ function getQuestionByrepertoire(data,userId_ens,nomrepository) {
     return [];
 }
 
+//Creation de la question dans la BDD
 function enregistrementQuestion(enonce,choix,reponseBonnes,reponseFausses,time, nomRepertoire) {
     let token = getCookie("token")
     let enregistrementQuestion = "mutation{\n" +
@@ -132,6 +136,7 @@ function enregistrementQuestion(enonce,choix,reponseBonnes,reponseFausses,time, 
         "}" +
         "}\n" +
         "}"
+	console.log(enregistrementQuestion);
     callAPI(enregistrementQuestion);
 }
 
@@ -265,7 +270,8 @@ function nomRepCorrect(nomNouveauRep) {
 
 function isGoodForm(){
     let isgood = true;
-    if( $("#enonceQuestion").val().toString() == ''){ isgood=false; }
+	//remplace les espaces tabulation et retours à la lignes par la chaine vide
+    if(document.getElementById("editeurQuill-enonce").firstChild.innerText.replace(/\n|\t|\s/g,'') == ''){ isgood=false; }
     $('input[name="group1"]').each(function () {
         let label_next = $(this).next();
         let input_into_the_label = label_next.children().val().toString();
@@ -276,13 +282,16 @@ function isGoodForm(){
     return isgood;
 }
 
+//ne fait plus rien maintenant car le code est du html
 function manageDoubleQuote(stringToManage) {
-    return stringToManage.replaceAll("\\", "\\\\").replaceAll('"', '\\\"')
+    	
+	return stringToManage.replaceAll("\\", "\\\\").replaceAll('"', '\\\"')
+	
 }
 
 /***********************Gestion evénements clique sur la page *******************************/
 $(document).on('click','#AjoutQuestion',function () {
-    let enonce = $("#enonceQuestion").val().toString();
+    let enonce = document.getElementById("editeurQuill-enonce").firstChild.innerHTML.replace("\n",'');
     let choix = true;
     if( $('#TypeChoix').val().toString() == "multiple") choix = false;
     let answerschecked =  $('input:checked').map(function (){ return $(this).val();}).get();
@@ -306,7 +315,8 @@ $(document).on('click','#AjoutQuestion',function () {
                 reponsesFausse.push("\"" + manageDoubleQuote(input_into_the_label) + "\"");
             }
         });
-        enregistrementQuestion(enonce, choix, reponsesBonnes, reponsesFausse, 10, nomRepertoire);
+        
+		enregistrementQuestion(enonce, choix, reponsesBonnes, reponsesFausse, 10, nomRepertoire);
         let token = getCookie("token");
         let userId_ens = getCookie("userId_ens")
         let query = "{" +
@@ -341,7 +351,8 @@ $(document).on('click','#AjoutQuestion',function () {
 });
 
 $(document).on('click','#ModifierQuestion',function () {
-    let enonce = $("#enonceQuestion").val().toString();
+    let enonce = document.getElementById("editeurQuill-enonce").firstChild.innerHTML.replace("\n",'');
+	console.log(enonce);
     let choix = true;
     if( $('#TypeChoix').val().toString() === "multiple") choix = false;
 
@@ -392,7 +403,7 @@ $(document).on('click','#ModifierQuestion',function () {
             "    }\n" +
             "\t}\n" +
             "}"
-
+		console.log("modification : \n",updateQuery)
         callAPI(updateQuery);
 
         let nomRepertoire = $('#NomRepertoiremodal')[0].innerHTML;
@@ -450,7 +461,7 @@ $(document).on('click','.row button',function () {
         $('#ModifierQuestion').hide();
         $('#AjoutQuestion').show();
         // Initialisation des différents champs dans la modale
-        $('#enonceQuestion').val('');
+        //$('#enonceQuestion').val('');
         $('#TypeChoix').val('unique');
         $('#TypeChoix').click();
         let i = 0;
@@ -486,7 +497,8 @@ $(document).on('click','.row button',function () {
         donnee.then((object) => {
             let question = object.data.getQuestionById;
             $('#ModifierQuestion').attr('name', question.id_quest);
-            $('#enonceQuestion').val(question.intitule);
+            //$('#enonceQuestion').val(question.intitule);
+			document.getElementById("editeurQuill-enonce").firstChild.innerHTML=question.intitule;
             question.choixUnique ? $('#TypeChoix').val('unique') : $('#TypeChoix').val('multiple');
             $('#TypeChoix').click();
             let numberOfGoodAnswers = question.reponsesBonnes.length;

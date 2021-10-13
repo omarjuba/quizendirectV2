@@ -132,6 +132,10 @@
 
 button
 {
+	max-height: 70px;
+	max-width: 500px;
+	overflow:hidden;
+	text-overflow: ellipsis;
     display: inline-block;
 }
 
