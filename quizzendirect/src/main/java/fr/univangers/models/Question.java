@@ -11,7 +11,7 @@ public class Question {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id_quest;
     private String intitule;
-    private int choixUnique; // un type array ArrayList<String> typeQuestions qui contient 3 mots "unique" "multiple" "ouverte" => l'affichage va changer en fonction le mot sélectionné
+    private int choixUnique; //
     @ElementCollection
     private List<String> reponsesBonnes;
     @ElementCollection

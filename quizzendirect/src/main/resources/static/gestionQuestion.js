@@ -267,13 +267,19 @@ function nomRepCorrect(nomNouveauRep) {
 function isGoodForm(){
     let isgood = true;
     if( $("#enonceQuestion").val().toString() == ''){ isgood=false; }
-    $('input[name="group1"]').each(function () {
-        let label_next = $(this).next();
-        let input_into_the_label = label_next.children().val().toString();
-        if (input_into_the_label == '') {
-                isgood = false;
-        }
-    });
+
+	if ($('#TypeChoix').val().toString() == "multiple" || $('#TypeChoix').val().toString() == "unique") {
+	    $('input[name="group1"]').each(function () {
+	        let label_next = $(this).next();
+	        let input_into_the_label = label_next.children().val().toString();
+	        if (input_into_the_label == '') {
+	                isgood = false;
+	        }
+	    });
+	}
+	if ($('#TypeChoix').val().toString() == "ouverte") {
+			isgood = true;
+	}
     return isgood;
 }
 
@@ -291,6 +297,7 @@ $(document).on('click','#AjoutQuestion',function () {
 		choix = 2;
 	}
 	console.log(choix); // pour tester
+	
     let answerschecked =  $('input:checked').map(function (){ return $(this).val();}).get();
     let reponsesFausse = [];
     let reponsesBonnes = [];
@@ -302,6 +309,7 @@ $(document).on('click','#AjoutQuestion',function () {
         alert("Formulaire mal rempli ! ");
     } else {
         //Fonction qui remplie le tableau de reponsesBonnes et Fausse en fonction des réponses sélectionnées
+		if ( (choix == 0) || (choix == 1)) {
         $('input[name="group1"]').each(function () {
 
             let label_next = $(this).next();
@@ -312,6 +320,20 @@ $(document).on('click','#AjoutQuestion',function () {
                 reponsesFausse.push("\"" + manageDoubleQuote(input_into_the_label) + "\"");
             }
         });
+	}
+
+		
+		//Fonction qui remplie le tableau de reponsesBonnes et Fausse pour la question ouverte
+		else if (choix == 2) {
+		$('input[name="group2"]').each(function() {
+			let input_reponse_ouverte = $(this).val().toString();
+			reponsesBonnes.push("\"" + manageDoubleQuote(input_reponse_ouverte) + "\"");
+			reponsesFausse.push("\"" + manageDoubleQuote(input_reponse_ouverte) +"1"+ "\"");
+
+		});
+		}
+
+//sqdsqdsq
         enregistrementQuestion(enonce, choix, reponsesBonnes, reponsesFausse, 10, nomRepertoire);
         let token = getCookie("token");
         let userId_ens = getCookie("userId_ens")
@@ -508,20 +530,25 @@ $(document).on('click','.row button',function () {
                 $('#radio-'+k+'79').prop('checked', false);
             }
         });
-
-
-
     }
 });
 
-//Fonction qui change le type de box pour les réponses : Checkbox où RadioButton
+//Fonction qui change le type de box pour les réponses : Checkbox où RadioButton ou Ouverte 
 $(document).on('click',"#TypeChoix",function () {
     $choix = $(this).val().toString();
     if( $choix == "multiple") {
+		$('.form-check-mb-4').attr('style','display:unset');
+		$('.form-check-mb-5').attr('style','display:none');
         $('.form-check-input').attr('type','checkbox');
     }
+	else if ($choix == "ouverte") {
+		$('.form-check-mb-4').attr('style','display:none');
+		$('.form-check-mb-5').attr('style','display:unset');
+	}
     else
     {
+		$('.form-check-mb-4').attr('style','display:unset');
+		$('.form-check-mb-5').attr('style','display:none');
         $('.form-check-input').attr('type','radio');
         let i=0;
         $('input[name="group1"]').each(function (){
@@ -570,6 +597,7 @@ $(document).on('click','input[name="group1"]',function (){
         });
     }
 });
+
 
 $(document).on('click','.btn.btn-danger', function (){
     let parent = $(this).parent();

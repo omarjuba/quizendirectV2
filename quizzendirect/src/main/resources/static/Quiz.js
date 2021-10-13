@@ -38,18 +38,25 @@ function getQuestion(question) {
     $("#enonce").html(question.intitule);
     $("#timer").html(question.time);
 
+
 	numero_question = ++numero_question;
 
+	// récupére le choix 
+	let choix = question.isChoixUnique();
+	console.log(choix); // KO
     /* Récupére toutes les réponses (bonnes et mauvaises) dans un tableau de propositions */
     var propositions = (question.reponsesBonnes).concat(question.reponsesFausses);
     /* Shuffle le tableau de propositions afin de ne pas avoir toujours l'ordre des bonnes réponses suivis des mauvaises réponses  */
     propositions.sort(() => Math.random() - 0.5);
 
-    /* Remplis les propositions des questions */
+	
+	    /* Remplis les propositions des questions */
     for (var i = 0; i < propositions.length; i++) {
         if (propositions[i] != "")
             $("#proposition" + (i + 1) + "").html(propositions[i]);
-    }
+    } 
+	
+	
 
     /* décrémente le timer */
     var time = question.time;
