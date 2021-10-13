@@ -20,4 +20,9 @@ public class WebSocketController {
         return question;
     }
 
+    @MessageMapping("/closed/{codeAcces}")
+    @SendTo("/quiz/salon/closed/{codeAcces}")
+    public String getMessage(String text,@DestinationVariable Integer codeAcces) {
+        return text;
+    }
 }

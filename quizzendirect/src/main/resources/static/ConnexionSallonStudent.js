@@ -30,11 +30,19 @@ $(function(){
 
                 window.location.href="/quiz?codeAcces="+codeAccesInput+"";
             }
+			else {
+				alert('Aucun Salon n\'existe avec ce code '); 
+			}
         });
 
+		//Enregistrement du mail de l'étudiant dans un cookie'
+		let studentMail = $("#studentmail").val();
+		document.cookie = "studentmail="+studentMail;
+		
         // arrivé ici, le code entré est mauvais, donc on empéche l'envoie du formulaire
         event.preventDefault();
-		alert('mauvais code');
 
     });
 });
+
+

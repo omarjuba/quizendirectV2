@@ -435,6 +435,8 @@ function sendQuestion(question) {
 
 $(function () {
     $("#disconnect").click(function () {
+	
+		stompClient.send("/app/closed/" + codeAcces, {}, "closed");
         disconnect();
     });
 });

@@ -36,5 +36,5 @@ public class Etudiant {
 
     public void setPseudo(String pseudo) {
         this.pseudo = pseudo;
-    }
+    }    
 }

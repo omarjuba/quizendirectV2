@@ -1,6 +1,7 @@
 /* WebSocket */
 var stompClient = null;
 var laquestion = null;
+var allQuestion =[];
 // Boolean used as a workaround to avoid the fact that the click event is launch twice when a answer is chosen
 var boolQuery = true;
 
@@ -21,8 +22,82 @@ var boolQuery = true;
         stompClient.subscribe('/quiz/salon/' + getQueryVariable("codeAcces"), function (question) {
             getQuestion(JSON.parse(question.body));
         });
+
+		stompClient.subscribe('/quiz/salon/closed/' + getQueryVariable("codeAcces"), function (text) {
+            	closeQuizz(text.body);
+        });
     });
 })();
+
+
+/*************************************************************************************/
+/**				REDIRIGER UN ETUDIANT A LA FIN DU QUIZZ								**/
+/************************************************************************************/
+const sleep = ms => new Promise(res => setTimeout(res, ms));
+async function closeQuizz(message){
+	if (message == "closed"){
+		
+		
+				
+		
+		$( ".modal-header" ).html( "<h3> Ce quiz est terminé </h3> " );	
+		if(getCookie("studentmail") !=="" ){	
+			let MailBody ="";
+				MailBody = MailBody + "<fieldset><legend>Récapitulatif de votre Quiz</legend>";
+			
+			for(var i = 0; i < allQuestion.length; ++i){
+				
+				
+				MailBody = MailBody + "<h3>N°"+(i+1).toString()+" "+allQuestion[i].question+":</h3>";
+				MailBody = 	MailBody + "<ul>";
+				MailBody = 	MailBody + "<li>Votre réponse: "+allQuestion[i].studentAnswer+"</li>";
+				
+				var propositions =(laquestion.reponsesBonnes).concat(laquestion.reponsesFausses);
+	    		propositions.sort(() => Math.random() - 0.5);
+				
+				MailBody = MailBody + "<li> la bonne réponse :";
+				for(var j = 0; j<propositions.length;++j){
+					if(reponseIsGood(laquestion.reponsesBonnes,propositions[j])) {
+						if(j == propositions.length -1 ) MailBody = 	MailBody +propositions[j]+" ";
+						else MailBody = MailBody +propositions[j]+", ";
+					}
+				}
+				MailBody = 	MailBody + "</li></ul>";
+			}
+			MailBody = 	MailBody + "</fieldset>";
+			
+			// envoi du mail au controlleur				 
+			$.ajax({
+			  method: "POST",
+			  url: "getMail",
+			  contentType : "application/json",
+			  data: JSON.stringify(getCookie("studentmail"))
+			})
+			  .done(function( msg ) {
+			    console.log( "Mail Status: " + msg );
+			  });
+	
+	
+			// envoi du contenu du mail au controlleur				 
+			$.ajax({
+			  method: "POST",
+			  url: "getBody",
+			  contentType : "application/json",
+			  data: JSON.stringify(MailBody)
+			})
+			  .done(function( msg ) {
+			    console.log( "Mail Status: " + msg );
+			  });
+	
+			await sleep(3500);
+			document.location.href = "/";
+
+		}
+		
+	}
+}
+
+/*************************************************************************************/
 
 var numero_question = 1;
 
@@ -103,7 +178,11 @@ function sendReponse(reponseVal) {
             "}"
 
         const donnee = callAPI(query);
+		
+		var alldata = {"question" : laquestion.intitule,"choix" : laquestion.choixUnique ,"bonneReponse" : laquestion.reponsesBonnes,"bonneFausse" : laquestion.reponsesFausses  ,"studentAnswer" : reponseVal};
+		allQuestion.push(alldata);
     }
+
 
 }
 
