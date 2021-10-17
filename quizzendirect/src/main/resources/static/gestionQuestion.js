@@ -1,3 +1,63 @@
+
+$(document).on('change', '#TypeChoix', function() {
+	//questionChoix
+	//questionOuverte
+	//si la valeur = ouverte => afficher questionouverte et cacher questionChoix sinon contraire
+	if(this.value === 'ouverte') {
+		$('#question-title').text('saisire les bonnes reponses');
+		$('#questionChoix').hide();
+		$('#questionOuverte').show();
+        document.querySelector('#reponses-container').innerHTML = '';
+        addReponseElement(1);
+	}
+	else {
+		$('#question-title').text('Cocher la bonne réponse');
+		$('#questionChoix').show();
+		$('#questionOuverte').hide();
+	}
+});
+
+
+$(document).on('click', '#btn-plus-reponse', function() {
+    let reponseLength = document.querySelectorAll('.reponsesOuverte').length;
+	if(reponseLength < 4) {
+        addReponseElement(reponseLength + 1);
+	}
+});
+
+
+$(document).on('click', '#btn-moin-reponse', function() {
+	
+	let reponses = document.querySelectorAll('.reponsesOuverte');
+	if(reponses.length > 1) {
+		let repContainer = document.querySelector('#reponses-container');
+		repContainer.removeChild(repContainer.lastChild);
+		
+	}
+});
+
+function addReponseElement(number) {
+    let div = document.createElement('div');
+    div.classList.add('form-inline');
+    div.classList.add('mb-2');
+    let label = document.createElement('label');
+    label.innerText = 'reponse ' + (number) + ' : ';
+    let input = document.createElement('input');
+    input.classList.add('reponsesOuverte');
+    input.setAttribute('type', 'text');
+    input.setAttribute('placeholder', 'reponse');
+    div.appendChild(label);
+    div.appendChild(input);
+    document.querySelector('#reponses-container').appendChild(div);
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 $(document).on('click', '.panel-heading span.clickable', function(e){
     var $this = $(this);
     if(!$this.hasClass('panel-collapsed')) {
@@ -280,6 +340,8 @@ function manageDoubleQuote(stringToManage) {
     return stringToManage.replaceAll("\\", "\\\\").replaceAll('"', '\\\"')
 }
 
+
+
 /***********************Gestion evénements clique sur la page *******************************/
 $(document).on('click','#AjoutQuestion',function () {
     let enonce = $("#enonceQuestion").val().toString();
@@ -487,7 +549,11 @@ $(document).on('click','.row button',function () {
             let question = object.data.getQuestionById;
             $('#ModifierQuestion').attr('name', question.id_quest);
             $('#enonceQuestion').val(question.intitule);
-            question.choixUnique ? $('#TypeChoix').val('unique') : $('#TypeChoix').val('multiple');
+            question.choixUnique ? 
+                $('#TypeChoix').val('unique')
+                : $('#TypeChoix').val('ouverte');
+                
+
             $('#TypeChoix').click();
             let numberOfGoodAnswers = question.reponsesBonnes.length;
             for (let j=1; j<=numberOfGoodAnswers; j++) {
@@ -511,7 +577,7 @@ $(document).on('click',"#TypeChoix",function () {
     if( $choix == "multiple") {
         $('.form-check-input').attr('type','checkbox');
     }
-    else
+    else if( $choix == "unique")
     {
         $('.form-check-input').attr('type','radio');
         let i=0;
@@ -524,6 +590,10 @@ $(document).on('click',"#TypeChoix",function () {
 
             i++;
         })
+    }
+     else if ( $choix == "ouverte")
+    {
+       //// à completer par moi 
     }
 });
 //Function qui gère le changement de couleur des reponses : Vert => Bonne reponse ,Rouge => mauvaise réponse

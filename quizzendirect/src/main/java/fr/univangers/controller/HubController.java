@@ -24,6 +24,10 @@ public class HubController {
             model.addAttribute("user", new User());
             return "comptePage";
         }
+        
+        //verivication de authentification 
+        //copier coller
+        //f url /creationSalon + /gestionQuestions
     }
 
     @PostMapping("/disconnection")

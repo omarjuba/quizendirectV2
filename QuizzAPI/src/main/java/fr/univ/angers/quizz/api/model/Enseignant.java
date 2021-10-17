@@ -30,7 +30,6 @@ public class Enseignant implements Serializable {
 		this.mail = mail;
 		this.motdepasse = motdepasse;
 	}
-
 	public int getId_ens() {return id_ens;}
 
 	public void setNom(String nom) {this.nom = nom;}
@@ -53,4 +52,5 @@ public class Enseignant implements Serializable {
 	public void removeRepertoire(List<Repertoire> repertoires) {
 		for(Repertoire repertoire : repertoires) removeRepertoire(repertoire);
 	}
+
 }

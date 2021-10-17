@@ -34,6 +34,7 @@ $(function(){
 
         // arrivé ici, le code entré est mauvais, donc on empéche l'envoie du formulaire
         event.preventDefault();
+		alert('mauvais code');
 
     });
 });

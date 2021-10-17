@@ -27,7 +27,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h3>
-                    <span class="label label-warning" id="qid">1</span>
+                    <span class="label label-warning" id="qid"></span>
                     <span id="enonce"></span>
                     <span id="timer" class="label label-info" style="float:right;"></span>
                 </h3>
@@ -51,6 +51,19 @@
                                     <label class="element-animation2 btn btn-lg btn-primary btn-block" th:text="${info.reponses.get(1)}"><span class="btn-label"><i class="glyphicon glyphicon-chevron-right"></i></span> <input type="radio" name="q_answer" value="2" >Réponse 2</label>
                                 </div>
                 -->
+                <div class="quizLibre" id="quizLibre">
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-8">
+                                <input type="text" placeholder="reponse" class="reponse form-control"/>
+                            </div>
+                            <div class="col-4">
+                                <button class="btn btn-primary" id="btnReponseLibre">Valider</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="quiz" id="quiz" data-toggle="buttons" >
                     <label class="reponse element-animation1 btn btn-lg btn-primary btn-block" >
                         <span class="btn-label">
