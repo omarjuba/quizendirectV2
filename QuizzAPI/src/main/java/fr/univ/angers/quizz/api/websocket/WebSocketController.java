@@ -17,6 +17,9 @@ public class WebSocketController {
     @SendTo("/quiz/salon/{codeAcces}")
     public Question getCurrentQuestion(Question question,@DestinationVariable Integer codeAcces) {
         logger.info("WebSocketController : createSalon()");
+        System.out.println("-----------------------------------------");
+        System.out.println(question);
+        System.out.println("---------------------------------------");
         return question;
     }
 

@@ -259,7 +259,8 @@ $(document).on("click", ".button-lancer", function () {
             'choixUnique': object.data.restartQuestionById.choixUnique,
             'reponsesBonnes': object.data.restartQuestionById.reponsesBonnes,
             'reponsesFausses': object.data.restartQuestionById.reponsesFausses,
-            'time': time
+            'time': time, 
+			'test':"test"
         };
         sendQuestion(question);
     });
@@ -271,8 +272,6 @@ $(document).on("click", "#closeModalStat", function () {
 
 });
 //function pour remettre a zero les reponses
-
-
 
 
 $(document).on("click", ".button-stat", function () {
@@ -427,6 +426,7 @@ function disconnect() {
 };
 
 function sendQuestion(question) {
+	console.log("sendquestion question",JSON.stringify(question))
     // ajout dans l'url le code d'accéss ( variable globale ) qui a été affecté lors de l'ouverture du salon
     stompClient.send("/app/salon/" + codeAcces, {}, JSON.stringify(question)
     );

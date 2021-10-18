@@ -20,15 +20,18 @@ var boolQuery = true;
         // ajout du code d'accés selon la variable en get dans l'url
         stompClient.subscribe('/quiz/salon/' + getQueryVariable("codeAcces"), function (question) {
             getQuestion(JSON.parse(question.body));
+			console.log("la question body: ", question.body);
         });
     });
 })();
 
 var numero_question = 1;
 
+
 function getQuestion(question) {
 
     laquestion = question;
+	console.log("laquestion",laquestion);
     /* Cache le chargement et affiche la question */
     $('#loadbar').hide();
     $("#quiz").fadeIn();
@@ -41,21 +44,26 @@ function getQuestion(question) {
 
 	numero_question = ++numero_question;
 
-	// récupére le choix 
-	let choix = question.isChoixUnique();
-	console.log(choix); // KO
+	// récupére le type de question
+	let type_question = question.choixUnique;
+	console.log(type_question); // KO
+	
+	
+	
     /* Récupére toutes les réponses (bonnes et mauvaises) dans un tableau de propositions */
     var propositions = (question.reponsesBonnes).concat(question.reponsesFausses);
     /* Shuffle le tableau de propositions afin de ne pas avoir toujours l'ordre des bonnes réponses suivis des mauvaises réponses  */
     propositions.sort(() => Math.random() - 0.5);
 
-	
-	    /* Remplis les propositions des questions */
-    for (var i = 0; i < propositions.length; i++) {
-        if (propositions[i] != "")
-            $("#proposition" + (i + 1) + "").html(propositions[i]);
-    } 
-	
+	if ( (type_question == 0) || (type_question == 1) ) {
+		/* Remplis les propositions des questions */
+	    for (var i = 0; i < propositions.length; i++) {
+	        if (propositions[i] != "")
+	            $("#proposition" + (i + 1) + "").html(propositions[i]);
+	    } 
+	} else if (type_question == 2) {
+		$(".quiz").children().replaceWith("<input type\"text\" />");
+	}
 	
 
     /* décrémente le timer */
