@@ -20,7 +20,8 @@ var boolQuery = true;
         // ajout du code d'accés selon la variable en get dans l'url
         stompClient.subscribe('/quiz/salon/' + getQueryVariable("codeAcces"), function (question) {
             getQuestion(JSON.parse(question.body));
-			console.log("la question body: ", question.body);
+			boolQuery = true;
+			getQuestionLibre(JSON.parse(question.body));
         });
     });
 })();
@@ -28,10 +29,48 @@ var boolQuery = true;
 var numero_question = 1;
 
 
+function getQuestionLibre(question) {
+	laquestion = question;
+	
+	/*Cache le chargement et affiche la question */
+	$('#loadbar').hide();
+	$('#quizLibre').fadeIn();
+	
+	
+	/* Remplis les informations des question */
+	$("#qid").html(numero_question);
+    $("#enonce").html(question.intitule);
+    $("#timer").html(question.time);
+	
+	numero_question = ++numero_question;
+	
+	
+	 /* décrémente le timer */
+    var time = question.time;
+
+    function sleep(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    async function reduceTime() {
+        while (time != 0) {
+            await sleep(1000);
+            $("#timer").html(time);
+            time--;
+        }
+        $('#loadbar').show();
+        $("#quizLibre").fadeOut();
+
+    }
+
+    reduceTime();
+	
+}
+
+
 function getQuestion(question) {
 
     laquestion = question;
-	console.log("laquestion",laquestion);
     /* Cache le chargement et affiche la question */
     $('#loadbar').hide();
     $("#quiz").fadeIn();
@@ -92,6 +131,7 @@ $(function () {
     /* Au démarrage, en attente d'une question */
     $('#loadbar').show();
     $("#quiz").fadeOut();
+	$("#quizLibre").fadeOut();
 
     /* Quand un étudiant clique sur une réponse, le chargement s'affiche */
     $("label").click(function () {
@@ -104,6 +144,16 @@ $(function () {
 
         }else boolQuery =true
     });
+
+	$('#btnReponseLibre').click(function() {
+		if(boolQuery) {
+			boolQuery = false
+			var reponseValue = $('.reponse').val();
+			sendReponse(reponseValue);
+            $('#loadbar').show();
+            $("#quizLibre").fadeOut();
+		} else boolQuery = true
+	});
 });
 
 function sendReponse(reponseVal) {
