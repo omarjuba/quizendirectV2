@@ -2,7 +2,9 @@
 var stompClient = null;
 var laquestion = null;
 // Boolean used as a workaround to avoid the fact that the click event is launch twice when a answer is chosen
-var boolQuery = true;
+var boolQuery = true ;
+// type de question envoyé par le prof. 0 pour une question unique, 1 pour une question multiple et 2 pour une question ouverte
+var typeQuestion = -1;
 
 /* Connecte le webSocket dés l'arrivée de la page */
 (function connect() {
@@ -20,56 +22,17 @@ var boolQuery = true;
         // ajout du code d'accés selon la variable en get dans l'url
         stompClient.subscribe('/quiz/salon/' + getQueryVariable("codeAcces"), function (question) {
             getQuestion(JSON.parse(question.body));
-			boolQuery = true;
-			getQuestionLibre(JSON.parse(question.body));
+        });
+		stompClient.subscribe('/quiz/salon/gettype/' + getQueryVariable("codeAcces"), function (text) {
+			typeQuestion = text.body;
         });
     });
 })();
 
 var numero_question = 1;
 
-
-function getQuestionLibre(question) {
-	laquestion = question;
-	
-	/*Cache le chargement et affiche la question */
-	$('#loadbar').hide();
-	$('#quizLibre').fadeIn();
-	
-	
-	/* Remplis les informations des question */
-	$("#qid").html(numero_question);
-    $("#enonce").html(question.intitule);
-    $("#timer").html(question.time);
-	
-	numero_question = ++numero_question;
-	
-	
-	 /* décrémente le timer */
-    var time = question.time;
-
-    function sleep(ms) {
-        return new Promise(resolve => setTimeout(resolve, ms));
-    }
-
-    async function reduceTime() {
-        while (time != 0) {
-            await sleep(1000);
-            $("#timer").html(time);
-            time--;
-        }
-        $('#loadbar').show();
-        $("#quizLibre").fadeOut();
-
-    }
-
-    reduceTime();
-	
-}
-
-
 function getQuestion(question) {
-
+	
     laquestion = question;
     /* Cache le chargement et affiche la question */
     $('#loadbar').hide();
@@ -83,28 +46,33 @@ function getQuestion(question) {
 
 	numero_question = ++numero_question;
 
-	// récupére le type de question
-	let type_question = question.choixUnique;
-	console.log(type_question); // KO
-	
-	
 	
     /* Récupére toutes les réponses (bonnes et mauvaises) dans un tableau de propositions */
     var propositions = (question.reponsesBonnes).concat(question.reponsesFausses);
     /* Shuffle le tableau de propositions afin de ne pas avoir toujours l'ordre des bonnes réponses suivis des mauvaises réponses  */
     propositions.sort(() => Math.random() - 0.5);
 
-	if ( (type_question == 0) || (type_question == 1) ) {
-		/* Remplis les propositions des questions */
-	    for (var i = 0; i < propositions.length; i++) {
-	        if (propositions[i] != "")
-	            $("#proposition" + (i + 1) + "").html(propositions[i]);
-	    } 
-	} else if (type_question == 2) {
-		$(".quiz").children().replaceWith("<input type\"text\" />");
-	}
 	
-
+	/* Remplis les propositions des questions */
+	/* Les choix pour les questions unique et multiple*/
+	/* Un input type text pour les questions ouvertes*/
+	if (typeQuestion < 2) {
+		$(".quizLibre").attr('style', 'display:none');
+		$(".quiz").attr('style', 'display:unset');
+		$("label").attr('style','');
+		if (typeQuestion == 1) {
+			$('input[name="q_answer"]').attr('type','checkbox');
+		} 
+	    for (var i = 0; i < propositions.length; i++) {
+	        if (propositions[i] != "") 
+	            $("#proposition" + (i + 1) + "").html(propositions[i]);
+	    }
+ 	} else {
+		$(".quizLibre").attr('style', 'display:unset');
+		$(".quiz").attr('style', 'display:none');
+	}
+	 
+	
     /* décrémente le timer */
     var time = question.time;
 
@@ -120,6 +88,7 @@ function getQuestion(question) {
         }
         $('#loadbar').show();
         $("#quiz").fadeOut();
+		$("#quizLibre").fadeOut();
 
     }
 
@@ -132,44 +101,66 @@ $(function () {
     $('#loadbar').show();
     $("#quiz").fadeOut();
 	$("#quizLibre").fadeOut();
-
     /* Quand un étudiant clique sur une réponse, le chargement s'affiche */
     $("label").click(function () {
+		var allInputs = $(":input[name='q_answer']").attr('type'); //afficher le type de input 
+		//$(this).css('background-color', '#428bca');
+	
+        if(boolQuery) {
+			if (allInputs == "checkbox")
+			{
+				boolQuery=false
+				$(this).css('background-color','#1BADCD');
+				var reponseValue = $(this).children(4)[2].innerHTML
+	            sendReponse(reponseValue);
+			} else {
+				 boolQuery=false
+	            var reponseValue = $(this).children(4)[2].innerHTML
+	            sendReponse(reponseValue);
+	            $('#loadbar').show();
+	            $("#quiz").fadeOut();
+			}
+        }else boolQuery =true 
+    });
+	
+    $('#btnReponseLibre').click(function () {
         if(boolQuery) {
             boolQuery=false
-            var reponseValue = $(this).children(4)[2].innerHTML
+            var reponseValue = $('.reponse').val();
             sendReponse(reponseValue);
             $('#loadbar').show();
-            $("#quiz").fadeOut();
-
-        }else boolQuery =true
+            $("#quizLibre").fadeOut();	
+        } else boolQuery =true
     });
-
-	$('#btnReponseLibre').click(function() {
-		if(boolQuery) {
-			boolQuery = false
-			var reponseValue = $('.reponse').val();
-			sendReponse(reponseValue);
-            $('#loadbar').show();
-            $("#quizLibre").fadeOut();
-		} else boolQuery = true
-	});
 });
+
+
 
 function sendReponse(reponseVal) {
     if (laquestion != null) {
         //TODO ajouter IF() ELSE
-        let query = "mutation{\n" +
-            "  updateReponse(reponse : \"" + reponseVal.replaceAll("\\", "\\\\") + "\" , id_quest: " + laquestion.id_quest + " ){\n" +
-            "  ... on Question {\n" +
-            "    id_quest\n" +
-            "  }" +
-            "  }\n" +
-            "}"
+		// la requête pour les questions unique + multiple
+		if (typeQuestion  < 2) {
+	        let query = "mutation{\n" +
+	            "  updateReponse(reponse : \"" + reponseVal.replaceAll("\\", "\\\\") + "\" , id_quest: " + laquestion.id_quest + " ){\n" +
+	            "  ... on Question {\n" +
+	            "    id_quest\n" +
+	            "  }" +
+	            "  }\n" +
+	            "}"	
+       	 	const donnee = callAPI(query);
 
-        const donnee = callAPI(query);
+		}  else { // la requête pour les questions ouvertes 
+			 let query = "mutation{\n" +
+	            "  updateReponse(reponse : \"" + reponseVal.replaceAll("\\") + "\" , id_quest: " + laquestion.id_quest + " ){\n" +
+	            "  ... on Question {\n" +
+	            "    id_quest\n" +
+	            "  }" +
+	            "  }\n" +
+	            "}"	
+       	 	const donnee = callAPI(query);
+		} 
     }
-
 }
 
 function reponseIsGood(listeReponsesBonnes, reponseVal) {

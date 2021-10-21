@@ -260,9 +260,9 @@ $(document).on("click", ".button-lancer", function () {
             'reponsesBonnes': object.data.restartQuestionById.reponsesBonnes,
             'reponsesFausses': object.data.restartQuestionById.reponsesFausses,
             'time': time, 
-			'test':"test"
         };
         sendQuestion(question);
+		console.log("la question", question);
     });
 })
 
@@ -426,10 +426,11 @@ function disconnect() {
 };
 
 function sendQuestion(question) {
-	console.log("sendquestion question",JSON.stringify(question))
+	//console.log("sendquestion question",JSON.stringify(question))
+	//console.log("choixUnique:", question.choixUnique);
     // ajout dans l'url le code d'accéss ( variable globale ) qui a été affecté lors de l'ouverture du salon
-    stompClient.send("/app/salon/" + codeAcces, {}, JSON.stringify(question)
-    );
+    stompClient.send("/app/salon/" + codeAcces, {}, JSON.stringify(question));
+	stompClient.send("/app/gettype/" + codeAcces, {}, question.choixUnique);
 };
 
 

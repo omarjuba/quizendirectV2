@@ -140,8 +140,8 @@ input QuestionInput {
     reponsesBonnes: [String]!
     reponsesFausses: [String]!
     time: Int!
-    nbBonneReponse : Int
-    nbMauvaiseReponse : Int
+    nbBonneReponse : Int!
+    nbMauvaiseReponse : Int!
 }
 
 input EnseignantInput {
@@ -177,7 +177,7 @@ type Mutation {
     """Crée une nouvelle question correspondant aux paramètres spécifiés"""
     createQuestion(token : String!, intitule: String!, choixUnique: Int!, reponsesBonnes: [String]!, reponsesFausses: [String]!, time: Int! , nomRepertoire : String) : QuestionResult
     """Modifie la question avec le ou les paramètre(s) spécifié(s)"""
-    updateQuestion(token : String!, id_quest: ID!, intitule: String, choixUnique: Int, reponsesBonnes: [String], reponsesFausses: [String], time: Int, repertoire: RepertoireInput) : QuestionResult
+    updateQuestion(token : String!, id_quest: ID!, intitule: String!, choixUnique: Int!, reponsesBonnes: [String]!, reponsesFausses: [String]!, time: Int!, repertoire: RepertoireInput!) : QuestionResult
     """Supprime la question correspondant à l'id spécifié"""
     removeQuestion(token : String!, id_quest: ID!) : QuestionResult
     """redemare la question pour les stats"""

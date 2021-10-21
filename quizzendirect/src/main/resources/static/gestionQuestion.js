@@ -354,7 +354,6 @@ $(document).on('click','#AjoutQuestion',function () {
 	} else if ($('#TypeChoix').val().toString() == "ouverte") {
 		choix = 2;
 	}
-	console.log(choix); // pour tester
 	
     let answerschecked =  $('input:checked').map(function (){ return $(this).val();}).get();
     let reponsesFausse = [];
@@ -380,17 +379,14 @@ $(document).on('click','#AjoutQuestion',function () {
 	        });
 		}
 
-		
 		//Fonction qui remplie le tableau de reponsesBonnes et Fausse pour la question ouverte
 		else if (choix == 2) {
 		$('.reponsesOuverte').each(function() {
 			let input_reponse_ouverte = $(this).val().toString();
 			reponsesBonnes.push("\"" + manageDoubleQuote(input_reponse_ouverte) + "\"");
-			//reponsesFausse.push("\"" + manageDoubleQuote(input_reponse_ouverte) +"1"+ "\"");
 		});
 		}
 
-//sqdsqdsq
         enregistrementQuestion(enonce, choix, reponsesBonnes, reponsesFausse, 10, nomRepertoire);
         let token = getCookie("token");
         let userId_ens = getCookie("userId_ens")
@@ -575,7 +571,24 @@ $(document).on('click','.row button',function () {
             let question = object.data.getQuestionById;
             $('#ModifierQuestion').attr('name', question.id_quest);
             $('#enonceQuestion').val(question.intitule);
-            question.choixUnique ? $('#TypeChoix').val('unique') : $('#TypeChoix').val('multiple');
+
+
+           // question.choixUnique ? $('#TypeChoix').val('unique') : $('#TypeChoix').val('multiple');
+			question.choixUnique ? 
+                $('#TypeChoix').val('unique')
+                : $('#TypeChoix').val('ouverte');
+			
+			/*$choix = $('#TypeChoix').val().toString();
+			if (choix == "unique") {
+				question.choixUnique = 0;
+			} else if (choix == "multiple") {
+				question.choiUnique = 1;
+			} else 
+				question.choixUnique = 2;
+			console.log("choix dans le fichier gestionQuestion", choix);
+			*/ 
+			
+			
             $('#TypeChoix').click();
             let numberOfGoodAnswers = question.reponsesBonnes.length;
             for (let j=1; j<=numberOfGoodAnswers; j++) {
@@ -594,19 +607,12 @@ $(document).on('click','.row button',function () {
 $(document).on('click',"#TypeChoix",function () {
     $choix = $(this).val().toString();
     if( $choix == "multiple") {
-		//$('.form-check-mb-4').attr('style','display:unset');
-		//$('.form-check-mb-5').attr('style','display:none');
         $('.form-check-input').attr('type','checkbox');
     }
 	else if ($choix == "ouverte") {
-		//$('.form-check-mb-4').attr('style','display:none');
-		//$('.form-check-mb-5').attr('style','display:unset');
-		console.log("question ouverte");
 	}
     else
     {
-		//$('.form-check-mb-4').attr('style','display:unset');
-		//$('.form-check-mb-5').attr('style','display:none');
         $('.form-check-input').attr('type','radio');
         let i=0;
         $('input[name="group1"]').each(function (){
