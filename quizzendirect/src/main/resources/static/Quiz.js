@@ -70,6 +70,7 @@ function getQuestion(question) {
  	} else {
 		$(".quizLibre").attr('style', 'display:unset');
 		$(".quiz").attr('style', 'display:none');
+		$('input[name="answer_ouverte"]').val('');
 	}
 	 
 	
@@ -104,8 +105,6 @@ $(function () {
     /* Quand un étudiant clique sur une réponse, le chargement s'affiche */
     $("label").click(function () {
 		var allInputs = $(":input[name='q_answer']").attr('type'); //afficher le type de input 
-		//$(this).css('background-color', '#428bca');
-	
         if(boolQuery) {
 			if (allInputs == "checkbox")
 			{
@@ -120,7 +119,7 @@ $(function () {
 	            $('#loadbar').show();
 	            $("#quiz").fadeOut();
 			}
-        }else boolQuery =true 
+        }else boolQuery = true 
     });
 	
     $('#btnReponseLibre').click(function () {
@@ -130,7 +129,7 @@ $(function () {
             sendReponse(reponseValue);
             $('#loadbar').show();
             $("#quizLibre").fadeOut();	
-        } else boolQuery =true
+        } else boolQuery = true
     });
 });
 
