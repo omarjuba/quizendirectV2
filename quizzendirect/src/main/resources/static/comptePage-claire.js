@@ -55,7 +55,7 @@ $(function () {
                 } else {
                     // On recupére tous les enseignants avec un appel à l'API
                     let nom_value_mutation = nom_value.toString();
-                    let email_value_mutation = email_value.toString();
+                    let email_value_mutation = email_value.toString().toLowerCase(); //email en lowercase pour la BDD
                     var mpd1_value_mutation = sha256(mdp1_value.toString());
 
                     let query_allEns = "{" +
@@ -81,6 +81,7 @@ $(function () {
                                 "   }" +
                                 "  }" +
                                 "}";
+                            console.log(mutation);
                             const donnees = callAPI(mutation);
                             donnees.then((objectcreatEns) => {
                                 document.cookie = "userName= " + objectcreatEns.data.createEnseignant.nom
@@ -111,17 +112,17 @@ $(function () {
 
     // Quand l'enseignant clique sur le boutton pour se connecter
     document.getElementById("login-submit").addEventListener("click", function (e) {
-		//hna kan declanchiw evenement dyal click 3la btn dyal authentification
-        e.preventDefault();
+		e.preventDefault();
         // on récupére les informations saisies
         var email_connexion = document.getElementById("login-email");
         var email_connexion_value = email_connexion.value;
         var mdp_email = document.getElementById("login-password");
         sha256(mdp_email.value);
-        mail = email_connexion_value
+        mail = email_connexion_value.toLowerCase();
+        console.log("mail :",mail);
         mdpValue = mdp_email.value
         if (mdpCrypto != undefined) {
-            doConnection(); // ila kan kolchi mzn kan landiw had fonction
+            doConnection();
         }
         else inDoConnect = true;
     });
@@ -148,16 +149,12 @@ function doConnection() {
     if (mdpCrypto != undefined)
         donnees_ens.then((object0) => {
 	
-			//had la fonction anonyme ka declancha moura serveru back end kay 3tina reponse
-
+		
             var enseignantExist = false;
             var mdpTrue = false;
             // si on trouve que le mail existe
-			//hadi limafhmtch lfa2ida dyalha 7it deja verifina dakchi f back end 
-			//mais bon anmodifiwha o sf
-			//7na ma so9nach f mail kifach tkteb soit maj soit min donc ancommpariw kolchi 
-			//soit en min soit en maj
-			if(object0.data.EnseignantVerification.mail != null) {
+			// soit en min soit en maj
+			if(object0.data.EnseignantVerification != null) {
 				if (object0.data.EnseignantVerification.mail.toLowerCase() == mail.toLowerCase()) {
                 enseignantExist = true;
                 if (object0.data.EnseignantVerification.motdepasse == mdpCrypto) {
@@ -199,10 +196,12 @@ function doConnection() {
 function sha256(str) {
     // We transform the string into an arraybuffer.
     var buffer = new TextEncoder("utf-8").encode(str);
-    var tmp;
     crypto.subtle.digest("SHA-256", buffer).then(function (hash) {
         mdpCrypto = hex(hash);
-        if(inDoConnect) doConnection()
+    //    if(inDoConnect)
+    //    {
+    //     doConnection()  je ne comprend pas pourquoi on appelle cette méthode ici alors que l'on veut juste reformatter une string
+    //    }     
     });
     return mdpCrypto
 
