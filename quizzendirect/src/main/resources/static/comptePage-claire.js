@@ -35,8 +35,9 @@ $(function () {
         var mdp2 = document.getElementById("register-confirm-password");
         var mdp2_value = mdp2.value;
 
+        let reg=new RegExp(".*@univ-angers.fr$",'i',);
         // on impose le mail doit etre un mail de l'université d'Angers
-        if (!email_value.endsWith("@univ-angers.fr")) {
+        if (!email_value.match(reg)) {
             e.preventDefault();
             alert("l'email doit étre une adresse de l'université d'Angers");
         }
