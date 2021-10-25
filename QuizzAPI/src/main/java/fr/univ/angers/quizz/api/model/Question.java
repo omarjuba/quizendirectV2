@@ -10,6 +10,8 @@ import java.util.Map;
 
 import javax.persistence.*;
 
+import org.hibernate.validator.constraints.Length;
+
 @Data
 @Entity
 @Table(name = "QUESTION")
@@ -18,6 +20,7 @@ public class Question implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id_quest;
+    @Length(max=2000)
     private String intitule;
     private boolean choixUnique;
     @ElementCollection

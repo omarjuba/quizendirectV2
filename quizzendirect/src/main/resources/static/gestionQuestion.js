@@ -97,7 +97,6 @@ function questionadded(id_rep,questions,enonce,choix,reponseBonnes,reponseFausse
         '     }' +
         '   }' +
         ' }'
-	console.log("question added\n",query);
     const donnee =  callAPI(query);
 }
 function getIdRepertory(data,userId_ens,nomrepository){
@@ -136,8 +135,21 @@ function enregistrementQuestion(enonce,choix,reponseBonnes,reponseFausses,time, 
         "}" +
         "}\n" +
         "}"
-	console.log(enregistrementQuestion);
-    callAPI(enregistrementQuestion);
+    callAPI(enregistrementQuestion).
+	then(reponse => {
+						
+						
+						if( typeof reponse.data==="undefined")
+						{
+							alert("erreur la question n'a pas été créée\n"+reponse.errors[0].message)
+							
+						}
+						else if(!reponse.data.createQuestion){
+							
+							alert("erreur la question n'a pas été créée \n"+reponse.errors[0].message);
+						}
+						
+						} );
 }
 
 function getIdQuestion(data,intitule) {
@@ -352,7 +364,6 @@ $(document).on('click','#AjoutQuestion',function () {
 
 $(document).on('click','#ModifierQuestion',function () {
     let enonce = document.getElementById("editeurQuill-enonce").firstChild.innerHTML.replace("\n",'');
-	console.log(enonce);
     let choix = true;
     if( $('#TypeChoix').val().toString() === "multiple") choix = false;
 
@@ -404,7 +415,21 @@ $(document).on('click','#ModifierQuestion',function () {
             "\t}\n" +
             "}"
 		console.log("modification : \n",updateQuery)
-        callAPI(updateQuery);
+        callAPI(updateQuery).
+		then(reponse => {
+						
+						console.log(reponse);
+						if( typeof reponse.data!=="undefined" && !reponse.data.updateQuestion)
+						{
+							alert("erreur la question n'a pas été modifée\n"+reponse.data.updateQuestion.message);
+							
+						}
+						else if(typeof reponse.errors!=="undefined")
+						{
+							console.log(reponse.errors[0].message);
+							alert("erreur la question n'a pas été modifiée\n"+reponse.errors[0].message);
+						}
+						} );
 
         let nomRepertoire = $('#NomRepertoiremodal')[0].innerHTML;
         const id = 'ModifierQuestion_'+idQuest+'_'+nomRepertoire.replace(/\s+/,'');
