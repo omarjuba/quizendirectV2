@@ -5,7 +5,10 @@ var laquestion = null;
 var boolQuery = true ;
 // type de question envoyé par le prof. 0 pour une question unique, 1 pour une question multiple et 2 pour une question ouverte
 var typeQuestion = -1;
-
+//tableau qui contient les réponses sélectionnées
+var LesReponses = [];
+// variable pour vérifier si une réponse est dans le tableau LesReponses ou pas
+var ReponseDansTableau = false;
 /* Connecte le webSocket dés l'arrivée de la page */
 (function connect() {
     let environement = window.location.hostname
@@ -60,6 +63,8 @@ function getQuestion(question) {
 		$(".quizLibre").attr('style', 'display:none');
 		$(".quiz").attr('style', 'display:unset');
 		$("label").attr('style','');
+		$("label").attr('checked', false);
+		LesReponses = [];
 		if (typeQuestion == 1) {
 			$('input[name="q_answer"]').attr('type','checkbox');
 		} 
@@ -90,10 +95,57 @@ function getQuestion(question) {
         $('#loadbar').show();
         $("#quiz").fadeOut();
 		$("#quizLibre").fadeOut();
-
     }
-
     reduceTime();
+}
+
+
+$("label").click(function () {
+	var check = $(this).attr("checked");
+	if (check == false) {
+		$(this).attr("checked", true)
+		console.log("true");
+	} else
+	{
+		$(this).attr("checked", false);
+		console.log("false");
+	}
+	
+});
+
+
+
+
+// fonction vérifie si la réponse r est dans le tableau LesReponses ou pas 
+// true => si la réponse est dans le tableau
+// false => si la réponse n'est pas dans le tableau
+function verifierReponse(r) {
+	for (const reponse of LesReponses) {
+		if (reponse == r) {
+			ReponseDansTableau = true;
+		}
+	}
+}
+
+// fonction ajouter la répoonse sélectionnée dans le tableau LesReponses si cette réponse n'est pas dans le tableau
+function ajouterReponse(reponse) {
+	verifierReponse(reponse);
+	if (ReponseDansTableau == false) {
+		LesReponses.push(reponse);
+	}
+	ReponseDansTableau = false;
+}
+
+//fonction supprimer la réponse sélectionnée dans le tableau LesReponses si cette réponse est dans le tableau
+function supprimerReponse(reponse) {
+	verifierReponse(reponse);
+	if (ReponseDansTableau == true) {
+		var index = LesReponses.indexOf(reponse);
+		if (index > -1) {
+			LesReponses.splice(index,1);
+			ReponseDansTableau = false;
+		}
+	}
 }
 
 /* Au chargement */
@@ -103,17 +155,33 @@ $(function () {
     $("#quiz").fadeOut();
 	$("#quizLibre").fadeOut();
     /* Quand un étudiant clique sur une réponse, le chargement s'affiche */
-    $("label").click(function () {
+	//$(":input[name='q_answer']").attr('checked', false); => OK
+	$("label").attr('checked', false);
+	
+	$("label").click(function () {
 		var allInputs = $(":input[name='q_answer']").attr('type'); //afficher le type de input 
+		
         if(boolQuery) {
 			if (allInputs == "checkbox")
 			{
 				boolQuery=false
-				$(this).css('background-color','#1BADCD');
-				var reponseValue = $(this).children(4)[2].innerHTML
-	            sendReponse(reponseValue);
+				var checkVal = $(this).attr("checked");
+				console.log(checkVal);
+				if (checkVal == undefined) {
+					$(this).attr("checked", true);
+					$(this).css('background-color','#1BADCD');
+					var reponseValue = $(this).children(4)[2].innerHTML
+					ajouterReponse(reponseValue);
+					console.log(LesReponses);
+				} else if (checkVal == "checked") {
+					$(this).attr("checked", false);
+					$(this).attr('style','');
+					var reponseValue = $(this).children(4)[2].innerHTML
+					supprimerReponse(reponseValue);
+					console.log(LesReponses);
+				}
 			} else {
-				 boolQuery=false
+				boolQuery=false
 	            var reponseValue = $(this).children(4)[2].innerHTML
 	            sendReponse(reponseValue);
 	            $('#loadbar').show();
@@ -123,14 +191,20 @@ $(function () {
     });
 	
     $('#btnReponseLibre').click(function () {
-        if(boolQuery) {
-            boolQuery=false
-            var reponseValue = $('.reponse').val();
-            sendReponse(reponseValue);
-            $('#loadbar').show();
-            $("#quizLibre").fadeOut();	
-        } else boolQuery = true
+        var reponseValue = $('.reponse').val();
+        sendReponse(reponseValue);
+        $('#loadbar').show();
+        $("#quizLibre").fadeOut();	
     });
+
+
+	$('#btnValiderMultiple').click(function () {	
+		for (let reponseValue of LesReponses) {
+			sendReponse(reponseValue);
+			$('#loadbar').show();
+            $("#quiz").fadeOut();
+		}
+	});
 });
 
 
@@ -138,27 +212,14 @@ $(function () {
 function sendReponse(reponseVal) {
     if (laquestion != null) {
         //TODO ajouter IF() ELSE
-		// la requête pour les questions unique + multiple
-		if (typeQuestion  < 2) {
-	        let query = "mutation{\n" +
-	            "  updateReponse(reponse : \"" + reponseVal.replaceAll("\\", "\\\\") + "\" , id_quest: " + laquestion.id_quest + " ){\n" +
-	            "  ... on Question {\n" +
-	            "    id_quest\n" +
-	            "  }" +
-	            "  }\n" +
-	            "}"	
-       	 	const donnee = callAPI(query);
-
-		}  else { // la requête pour les questions ouvertes 
-			 let query = "mutation{\n" +
-	            "  updateReponse(reponse : \"" + reponseVal.replaceAll("\\") + "\" , id_quest: " + laquestion.id_quest + " ){\n" +
-	            "  ... on Question {\n" +
-	            "    id_quest\n" +
-	            "  }" +
-	            "  }\n" +
-	            "}"	
-       	 	const donnee = callAPI(query);
-		} 
+        let query = "mutation{\n" +
+            "  updateReponse(reponse : \"" + reponseVal.replaceAll("\\", "\\\\") + "\" , id_quest: " + laquestion.id_quest + " ){\n" +
+            "  ... on Question {\n" +
+            "    id_quest\n" +
+            "  }" +
+            "  }\n" +
+            "}"	
+   	 	const donnee = callAPI(query);
     }
 }
 
