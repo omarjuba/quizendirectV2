@@ -32,16 +32,6 @@ public class SendMailService {
 		helper.setSubject(mailTopic);
 		this.javaMailSender.send(simpleMailMessage);
 		
-		
-//		simpleMailMessage.setFrom("lordariskoa@gmail.com");
-//		simpleMailMessage.setTo(to);
-//		simpleMailMessage.setSubject(mailTopic);
-//		simpleMailMessage.setText(mailBody);
-//		javaMailSender.send(simpleMailMessage);
-		
-		
-		
-		
 	}
 	
 	
