@@ -70,29 +70,53 @@
                 <select id="TypeChoix">
                     <option value="unique" checked >Unique</option>
                     <option value="multiple">Multiple</option>
+                    <option value="ouverte">Ouverte</option>
                 </select>
                 <!-- Radio -->
                 <p>
-                    <strong>Réponses possibles : Cocher la bonne réponse </strong>
+                    <strong>Réponses possibles : <span id="question-title">Cocher la bonne réponse</span> </strong>
                 </p>
-                <div class="form-check mb-4">
-                    <input class="form-check-input" name="group1" type="radio" id="radio-179" value="option1" checked>
-                    <label class="form-check-label" for="radio-179" style="width: 95%;" ><input type="text" id="Choix1" placeholder="Reponse A" style="width:100%;"  required="required"></label>
+                <div id="questionChoix">
+	                <div class="form-check-mb-4" style="display:unset">
+	                    <input class="form-check-input" name="group1" type="radio" id="radio-179" value="option1" checked>
+	                    <label class="form-check-label" for="radio-179" style="width: 95%;" ><input type="text" id="Choix1" placeholder="Reponse A" style="width:100%;"  required="required"></label>
+	                </div>
+	
+	                <div class="form-check-mb-4" style="display:unset">
+	                    <input class="form-check-input" name="group1" type="radio" id="radio-279" value="option2">
+	                    <label class="form-check-label" for="radio-279" style="width: 95%;" ><input type="text" id="Choix2"placeholder="Reponse B" style="width:100%;"  required="required"></label>
+	                </div>
+	
+	                <div class="form-check-mb-4" style="display:unset">
+	                    <input class="form-check-input" name="group1" type="radio" id="radio-379" value="option3">
+	                    <label class="form-check-label" for="radio-379" style="width: 95%;" ><input type="text" id="Choix3" placeholder="Reponse C" style="width:100%;"  required="required"></label>
+	                </div>
+	                <div class="form-check-mb-4" style="display:unset">
+	                    <input class="form-check-input" name="group1" type="radio" id="radio-479" value="option4" >
+	                    <label class="form-check-label" for="radio-479" style="width: 95%;" ><input type="text" id="Choix4" placeholder="Aucune des réponses" style="width:100%;"  required="required"></label>
+	                </div>
                 </div>
-
-                <div class="form-check mb-4">
-                    <input class="form-check-input" name="group1" type="radio" id="radio-279" value="option2">
-                    <label class="form-check-label" for="radio-279" style="width: 95%;" ><input type="text" id="Choix2"placeholder="Reponse B" style="width:100%;"  required="required"></label>
+                
+                
+                <div id="questionOuverte">
+                	<div id="reponses-container"> </div>
+                	<div>
+                		<button class="btn btn-success" id="btn-plus-reponse">+</button>
+                		<button class="btn btn-warning" id="btn-moin-reponse">-</button>
+                	</div>
                 </div>
-
-                <div class="form-check mb-4">
-                    <input class="form-check-input" name="group1" type="radio" id="radio-379" value="option3">
-                    <label class="form-check-label" for="radio-379" style="width: 95%;" ><input type="text" id="Choix3" placeholder="Reponse C" style="width:100%;"  required="required"></label>
+                
+                
+               	<!-- 
+                <div class="form-check-mb-5" style="display:none">
+                	<input type="text" name="group2" id="reponse-question-ouverte" placeholder="bonne réponse"  style="width:100%;" required="required"/>
                 </div>
-                <div class="form-check mb-4">
-                    <input class="form-check-input" name="group1" type="radio" id="radio-479" value="option4" >
-                    <label class="form-check-label" for="radio-479" style="width: 95%;" ><input type="text" id="Choix4" placeholder="Aucune des réponses" style="width:100%;"  required="required"></label>
-                </div>
+                 -->
+                
+            <script>
+            	$('#questionOuverte').hide();
+            </script>
+                
 
             </div>
 

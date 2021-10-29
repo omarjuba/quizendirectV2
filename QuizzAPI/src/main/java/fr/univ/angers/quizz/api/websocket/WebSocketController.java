@@ -17,7 +17,16 @@ public class WebSocketController {
     @SendTo("/quiz/salon/{codeAcces}")
     public Question getCurrentQuestion(Question question,@DestinationVariable Integer codeAcces) {
         logger.info("WebSocketController : createSalon()");
+        System.out.println("-----------------------------------------");
+        System.out.println(question.isChoixUnique());
+        System.out.println("---------------------------------------");
         return question;
+    }
+    
+    @MessageMapping("/gettype/{codeAcces}")
+    @SendTo("/quiz/salon/gettype/{codeAcces}")
+    public int getMessage(int typeofquestion,@DestinationVariable Integer codeAcces) {
+        return typeofquestion;
     }
 
     @MessageMapping("/closed/{codeAcces}")

@@ -22,7 +22,7 @@ public class Question implements Serializable {
     private int id_quest;
     @Length(max=2000)
     private String intitule;
-    private boolean choixUnique;
+    private int choixUnique;
     @ElementCollection
     private List<String> reponsesBonnes;
     @ElementCollection
@@ -40,7 +40,7 @@ public class Question implements Serializable {
     }
 
 
-    public Question(String intitule, boolean choixUnique, List<String> reponsesBonnes, List<String> reponsesFausses, int time) {
+    public Question(String intitule, int choixUnique, List<String> reponsesBonnes, List<String> reponsesFausses, int time) {
         this.intitule = intitule;
         this.choixUnique = choixUnique;
         this.reponsesBonnes = reponsesBonnes;
@@ -61,11 +61,11 @@ public class Question implements Serializable {
         return intitule;
     }
 
-    public void setChoixUnique(boolean choixUnique) {
+    public void setChoixUnique(int choixUnique) {
         this.choixUnique = choixUnique;
     }
 
-    public boolean isChoixUnique() {
+    public int isChoixUnique() {
         return choixUnique;
     }
 

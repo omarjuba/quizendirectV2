@@ -75,17 +75,30 @@ public class QuestionDataFetcher {
                 for (Repertoire rep: repertoires) {
                     if(rep.getNom().equals(dataFetchingEnvironment.getArgument("nomRepertoire"))) repertoire = rep;
                 }
-                for (int i = 0; i < reponses.size() - 1; i++) {
-                    for (int j = i + 1; j < reponses.size(); j++) {
-                        if (reponses.get(i).equals(reponses.get(j)))
-                            return new Error("createQuestion", "INVALID_ARG", "Erreur : Vous avez saisi plusieurs réponses identiques.");
-                    }
-                }
+                
+                
+                
+                //récupérer le type choixunique pour la question ouverte
+                // si c'est une question ouverte (int ==2) on ignore les réponses
+              // if( (int) dataFetchingEnvironment.getArgument("choixUnique") == 2) {
+            	   // pour l'instant il fait rien 
+            	  
+               //}
+               
+               	// si les questions sont uniques ou multiple => on vérifie les réponses
+                //if ( (int)dataFetchingEnvironment.getArgument("choixUnique") == 0 || (int)dataFetchingEnvironment.getArgument("choixUnique") == 1) {
+	                for (int i = 0; i < reponses.size() - 1; i++) {
+	                    for (int j = i + 1; j < reponses.size(); j++) {
+	                        if (reponses.get(i).equals(reponses.get(j)))
+	                            return new Error("createQuestion", "INVALID_ARG", "Erreur : Vous avez saisi plusieurs réponses identiques.");
+	                    }
+	                }
+                //}
 
                 if (((int) dataFetchingEnvironment.getArgument("time")) <= 0)
                     return new Error("createQuestion", "INVALID_ARG", "Erreur : Le temps de réponse à la question que vous avez saisi : '" + dataFetchingEnvironment.getArgument("time") + "' secondes, n'est pas correct.");
 
-
+                //récupérer les questions dans le répertoire
                 List<Question> questions = repertoire.getQuestions();
                 for (Question question : questions) {
                     if (dataFetchingEnvironment.getArgument("intitule").equals(question.getIntitule()) && dataFetchingEnvironment.getArgument("choixUnique").equals(question.isChoixUnique()) && dataFetchingEnvironment.getArgument("reponsesBonnes").equals(question.getReponsesBonnes()) && dataFetchingEnvironment.getArgument("reponsesFausses").equals(question.getReponsesFausses()) && dataFetchingEnvironment.getArgument("time").equals(question.getTime()))

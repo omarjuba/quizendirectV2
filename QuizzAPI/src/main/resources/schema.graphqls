@@ -3,8 +3,8 @@ type Question {
     id_quest : ID!
     """Intitulé de la question"""
     intitule : String
-    """Vrai si la question est à choix unique, faux sinon"""
-    choixUnique : Boolean
+    """0 pour la question unique, 1 pour la question multiple et 2 pour la question ouverte"""
+    choixUnique : Int
     """Liste de la (des) bonne(s) réponse(s) à la question"""
     reponsesBonnes : [String]
     """Liste de la (des) mauvaise(s) réponse(s) à la question"""
@@ -136,12 +136,12 @@ type Query {
 
 input QuestionInput {
     intitule: String!
-    choixUnique: Boolean!
+    choixUnique: Int!
     reponsesBonnes: [String]!
     reponsesFausses: [String]!
     time: Int!
-    nbBonneReponse : Int
-    nbMauvaiseReponse : Int
+    nbBonneReponse : Int!
+    nbMauvaiseReponse : Int!
 }
 
 input EnseignantInput {
@@ -175,9 +175,9 @@ type Mutation {
     """met à jour la reponse de la question correspondant à l'id spécifié"""
     updateReponse(reponse : String!, id_quest : ID! ) : QuestionResult
     """Crée une nouvelle question correspondant aux paramètres spécifiés"""
-    createQuestion(token : String!, intitule: String!, choixUnique: Boolean!, reponsesBonnes: [String]!, reponsesFausses: [String]!, time: Int! , nomRepertoire : String) : QuestionResult
+    createQuestion(token : String!, intitule: String!, choixUnique: Int!, reponsesBonnes: [String]!, reponsesFausses: [String]!, time: Int! , nomRepertoire : String) : QuestionResult
     """Modifie la question avec le ou les paramètre(s) spécifié(s)"""
-    updateQuestion(token : String!, id_quest: ID!, intitule: String, choixUnique: Boolean, reponsesBonnes: [String], reponsesFausses: [String], time: Int, repertoire: RepertoireInput) : QuestionResult
+    updateQuestion(token : String!, id_quest: ID!, intitule: String!, choixUnique: Int!, reponsesBonnes: [String]!, reponsesFausses: [String]!, time: Int!, repertoire: RepertoireInput) : QuestionResult
     """Supprime la question correspondant à l'id spécifié"""
     removeQuestion(token : String!, id_quest: ID!) : QuestionResult
     """redemare la question pour les stats"""

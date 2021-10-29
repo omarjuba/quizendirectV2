@@ -1,3 +1,61 @@
+  $(document).on('change', '#TypeChoix', function() {
+	//questionChoix
+	//questionOuverte
+	//si la valeur = ouverte => afficher questionouverte et cacher questionChoix sinon contraire
+	if(this.value === 'ouverte') {
+		$('#question-title').text('saisire les bonnes reponses');
+		$('#questionChoix').hide();
+		$('#questionOuverte').show();
+        document.querySelector('#reponses-container').innerHTML = '';
+        addReponseElement(1);
+	}
+	else {
+		$('#question-title').text('Cocher la bonne réponse');
+		$('#questionChoix').show();
+		$('#questionOuverte').hide();
+	}
+});
+
+
+$(document).on('click', '#btn-plus-reponse', function() {
+    let reponseLength = document.querySelectorAll('.reponsesOuverte').length;
+	if(reponseLength < 4) {
+        addReponseElement(reponseLength + 1);
+	}
+});
+
+
+$(document).on('click', '#btn-moin-reponse', function() {
+
+	let reponses = document.querySelectorAll('.reponsesOuverte');
+	if(reponses.length > 1) {
+		let repContainer = document.querySelector('#reponses-container');
+		repContainer.removeChild(repContainer.lastChild);
+
+	}
+});
+
+function addReponseElement(number) {
+    let div = document.createElement('div');
+    div.classList.add('form-inline');
+    div.classList.add('mb-2');
+    let label = document.createElement('label');
+    label.innerText = 'reponse ' + (number) + ' : ';
+    let input = document.createElement('input');
+    input.classList.add('reponsesOuverte');
+    input.setAttribute('type', 'text');
+    input.setAttribute('placeholder', 'reponse');
+    div.appendChild(label);
+    div.appendChild(input);
+    document.querySelector('#reponses-container').appendChild(div);
+}
+
+
+
+
+
+
+////////////////////////////////////
 $(document).on('click', '.panel-heading span.clickable', function(e){
     var $this = $(this);
     if(!$this.hasClass('panel-collapsed')) {
@@ -126,6 +184,7 @@ function getQuestionByrepertoire(data,userId_ens,nomrepository) {
 
 //Creation de la question dans la BDD
 function enregistrementQuestion(enonce,choix,reponseBonnes,reponseFausses,time, nomRepertoire) {
+	
     let token = getCookie("token")
     let enregistrementQuestion = "mutation{\n" +
         "  createQuestion(token : \""+ token +"\" , nomRepertoire: \""+ nomRepertoire+"\" intitule:\"" + manageDoubleQuote(enonce) + "\",choixUnique:"+choix+",reponsesBonnes:["+reponseBonnes+"],reponsesFausses:["+reponseFausses+"],time:"+time+"){\n" +
@@ -284,13 +343,18 @@ function isGoodForm(){
     let isgood = true;
 	//remplace les espaces tabulation et retours à la lignes par la chaine vide
     if(document.getElementById("editeurQuill-enonce").firstChild.innerText.replace(/\n|\t|\s/g,'') == ''){ isgood=false; }
-    $('input[name="group1"]').each(function () {
-        let label_next = $(this).next();
-        let input_into_the_label = label_next.children().val().toString();
-        if (input_into_the_label == '') {
-                isgood = false;
-        }
-    });
+	if ($('#TypeChoix').val().toString() == "multiple" || $('#TypeChoix').val().toString() == "unique") {
+	    $('input[name="group1"]').each(function () {
+	        let label_next = $(this).next();
+	        let input_into_the_label = label_next.children().val().toString();
+	        if (input_into_the_label == '') {
+	                isgood = false;
+	        }
+	    });
+	}
+	if ($('#TypeChoix').val().toString() == "ouverte") {
+			isgood = true;
+	}
     return isgood;
 }
 
@@ -303,9 +367,15 @@ function manageDoubleQuote(stringToManage) {
 
 /***********************Gestion evénements clique sur la page *******************************/
 $(document).on('click','#AjoutQuestion',function () {
+
     let enonce = document.getElementById("editeurQuill-enonce").firstChild.innerHTML.replace("\n",'');
-    let choix = true;
-    if( $('#TypeChoix').val().toString() == "multiple") choix = false;
+    let choix = 0;
+    if( $('#TypeChoix').val().toString() == "multiple") {
+		choix = 1;
+	} else if ($('#TypeChoix').val().toString() == "ouverte") {
+		choix = 2;
+	}
+	
     let answerschecked =  $('input:checked').map(function (){ return $(this).val();}).get();
     let reponsesFausse = [];
     let reponsesBonnes = [];
@@ -317,18 +387,31 @@ $(document).on('click','#AjoutQuestion',function () {
         alert("Formulaire mal rempli ! ");
     } else {
         //Fonction qui remplie le tableau de reponsesBonnes et Fausse en fonction des réponses sélectionnées
-        $('input[name="group1"]').each(function () {
+		if ( (choix == 0) || (choix == 1)) {
+	        $('input[name="group1"]').each(function () {
+	
+	            let label_next = $(this).next();
+	            let input_into_the_label = label_next.children().val().toString();
+	            if (answerschecked.indexOf($(this).val()) != -1) {
+	                reponsesBonnes.push("\"" + manageDoubleQuote(input_into_the_label) + "\"");
+	            } else {
+	                reponsesFausse.push("\"" + manageDoubleQuote(input_into_the_label) + "\"");
+	            }
+	        });
+			console.log(reponsesFausse.length);
+			console.log(reponsesBonnes.length);
+		}
+		
+		//Fonction qui remplie le tableau de reponsesBonnes et Fausse pour la question ouverte
+		else if (choix == 2) {
+		$('.reponsesOuverte').each(function() {
+			let input_reponse_ouverte = $(this).val().toString();
+			reponsesBonnes.push("\"" + manageDoubleQuote(input_reponse_ouverte) + "\"");
+		});
+		}
 
-            let label_next = $(this).next();
-            let input_into_the_label = label_next.children().val().toString();
-            if (answerschecked.indexOf($(this).val()) != -1) {
-                reponsesBonnes.push("\"" + manageDoubleQuote(input_into_the_label) + "\"");
-            } else {
-                reponsesFausse.push("\"" + manageDoubleQuote(input_into_the_label) + "\"");
-            }
-        });
-        
 		enregistrementQuestion(enonce, choix, reponsesBonnes, reponsesFausse, 10, nomRepertoire);
+
         let token = getCookie("token");
         let userId_ens = getCookie("userId_ens")
         let query = "{" +
@@ -363,9 +446,14 @@ $(document).on('click','#AjoutQuestion',function () {
 });
 
 $(document).on('click','#ModifierQuestion',function () {
+
     let enonce = document.getElementById("editeurQuill-enonce").firstChild.innerHTML.replace("\n",'');
-    let choix = true;
-    if( $('#TypeChoix').val().toString() === "multiple") choix = false;
+    let choix = 0;
+    if( $('#TypeChoix').val().toString() === "multiple") {
+		choix = 1;
+	} else if ($('#TypeChoix').val().toString() === "ouverte") {
+		choix = 2;
+	}
 
     let answerschecked =  $('input:checked').map(function (){ return $(this).val();}).get();
     let reponsesFausse = [];
@@ -414,10 +502,11 @@ $(document).on('click','#ModifierQuestion',function () {
             "    }\n" +
             "\t}\n" +
             "}"
+
 		console.log("modification : \n",updateQuery)
         callAPI(updateQuery).
+		
 		then(reponse => {
-						
 						console.log(reponse);
 						if( typeof reponse.data!=="undefined" && !reponse.data.updateQuestion)
 						{
@@ -430,7 +519,7 @@ $(document).on('click','#ModifierQuestion',function () {
 							alert("erreur la question n'a pas été modifiée\n"+reponse.errors[0].message);
 						}
 						} );
-
+		
         let nomRepertoire = $('#NomRepertoiremodal')[0].innerHTML;
         const id = 'ModifierQuestion_'+idQuest+'_'+nomRepertoire.replace(/\s+/,'');
         $('#'+id)[0].innerHTML = enonce;
@@ -522,9 +611,17 @@ $(document).on('click','.row button',function () {
         donnee.then((object) => {
             let question = object.data.getQuestionById;
             $('#ModifierQuestion').attr('name', question.id_quest);
-            //$('#enonceQuestion').val(question.intitule);
-			document.getElementById("editeurQuill-enonce").firstChild.innerHTML=question.intitule;
-            question.choixUnique ? $('#TypeChoix').val('unique') : $('#TypeChoix').val('multiple');
+            $('#enonceQuestion').val(question.intitule);
+
+
+		if (question.choixUnique == 1) {
+			$('#TypeChoix').val('multiple');
+		} else if (question.choixUnique == 2) {
+			$('#TypeChoix').val('ouverte');
+		} else {
+			 $('#TypeChoix').val('unique')
+		}
+           		
             $('#TypeChoix').click();
             let numberOfGoodAnswers = question.reponsesBonnes.length;
             for (let j=1; j<=numberOfGoodAnswers; j++) {
@@ -536,18 +633,17 @@ $(document).on('click','.row button',function () {
                 $('#radio-'+k+'79').prop('checked', false);
             }
         });
-
-
-
     }
 });
 
-//Fonction qui change le type de box pour les réponses : Checkbox où RadioButton
+//Fonction qui change le type de box pour les réponses : Checkbox où RadioButton ou Ouverte 
 $(document).on('click',"#TypeChoix",function () {
     $choix = $(this).val().toString();
     if( $choix == "multiple") {
         $('.form-check-input').attr('type','checkbox');
     }
+	else if ($choix == "ouverte") {
+	}
     else
     {
         $('.form-check-input').attr('type','radio');
@@ -598,6 +694,7 @@ $(document).on('click','input[name="group1"]',function (){
         });
     }
 });
+
 
 $(document).on('click','.btn.btn-danger', function (){
     let parent = $(this).parent();

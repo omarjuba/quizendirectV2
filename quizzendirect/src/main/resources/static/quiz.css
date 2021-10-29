@@ -1,9 +1,60 @@
+.btn-validerMultiple {
+  background-color: #4CAF50; /* Green */
+  border: none;
+  color: white;
+  padding: 10px 25px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 450px;
+  transition-duration: 0.4s;
+  cursor: pointer;
+
+  background-color: white; 
+  color: black; 
+  border: 2px solid #008CBA;
+}
+
+.btn-validerMultiple:hover {
+  background-color: #008CBA;
+  color: white;
+}
+
+
+.btn-validerLibre {
+  background-color: #4CAF50; /* Green */
+  border: none;
+  color: white;
+  padding: 10px 25px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 450px;
+  transition-duration: 0.4s;
+  cursor: pointer;
+
+  background-color: white; 
+  color: black; 
+  border: 2px solid #008CBA;
+}
+
+.btn-validerLibre:hover {
+  background-color: #008CBA;
+  color: white;
+}
+
+
+
 #qid {
     padding: 10px 15px;
     -moz-border-radius: 50px;
     -webkit-border-radius: 50px;
     border-radius: 20px;
 }
+
+
 label.btn {
     padding: 18px 60px;
     white-space: normal;
@@ -14,6 +65,7 @@ label.btn {
     -moz-transition-duration: .3s;
     -o-transition-duration: .3s
 }
+
 
 label.btn:hover {
     text-shadow: 0 3px 2px rgba(0,0,0,0.4);

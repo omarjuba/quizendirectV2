@@ -42,7 +42,7 @@ function sendQuestion() {
         {
                 'id_quest': 1,
                 'intitule': 'questionX',
-                'choixUnique': false,
+                'choixUnique': 2,
                 'reponsesBonnes': [],
                 'reponsesFausses': [],
                 'time': 15,
