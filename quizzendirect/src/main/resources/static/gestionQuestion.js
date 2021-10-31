@@ -659,6 +659,19 @@ $(document).on('click','.row button',function () {
 				$('#questionChoix').css('display','none');
 				$('#TypeChoix').val('ouverte');
 				
+				let str=""
+				//permet de bien charger les réponses
+				for(let i=1;i<=question.reponsesBonnes.length;i++){
+					str+="<div class=\"form-inline mb-2\">"
+					+"<label>reponse"+i+" : </label>"
+					+"<input class=\"reponsesOuverte\" type=\"text\" value=\""+question.reponsesBonnes[i-1]+"\">";
+				}
+				$("#reponses-container").html(str);
+					
+				$('#questionOuverte').css('display','initial');
+				$('#questionChoix').css('display','none');
+				$('#TypeChoix').val('ouverte');
+				
 				 break;
 			}
 			
