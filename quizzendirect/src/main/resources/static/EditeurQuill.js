@@ -3,9 +3,9 @@
 var quill = new Quill('#editeurQuill-enonce', {
     modules: {
       toolbar: [
-        [{'font': ['monospace',true]},{ header: [1, 2, false] }],
+        [{'font': ['monospace',true]},{ header: [1, 2, 3, false] }],
         ['bold', 'italic', 'underline','strike'],
-        ['code-block',{ 'color': [] }, { 'background': [] },'blockquote'],
+        [{ 'color': [] }, { 'background': [] },'blockquote'],
         ['video'],
         [{ 'indent': '-1'}, { 'indent': '+1' }], 
         [{ 'list': 'ordered'}, { 'list': 'bullet' }],
