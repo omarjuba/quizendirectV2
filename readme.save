@@ -1,0 +1,17 @@
+                         *  Lancement  de la base de donner postgres  *
+                         
+                         
+
+1. Installer le sgbd postgresql ou bien utiliser l'image docker postgresql  ---> docker run --name some-postgres -p 5432:5432 -e POSTGRES_PASSWORD=root -d postgres
+
+
+
+2. docker run --name pgadminpostg1 -p 5050:5050 thajeztah/pgadmin4
+
+----> pour visualiser la base de donner sur phpmyadmin vous pouver aller sur 
+http://localhost:5050
+--------------------------------------------------------------------------------------------------
+
+
+
+ modifier le fichier application.properties en changeant le username et le password
