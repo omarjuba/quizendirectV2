@@ -250,7 +250,9 @@ function questionExiste(question)  {
 
 /***********************Fonction *******************************/
 //Ajout des questions à un repertoire
+//charge les question d'un repertoire existant
 function ajouteQuestion(nomRepertoire,enonce) {
+	console.log("ajoute une question à un repertoire")
     let query = '{\n' +
         '   getQuestionByIntitule(intitule : "'+ manageDoubleQuote(enonce) +'" ){' +
         '       id_quest\n' +
@@ -258,12 +260,17 @@ function ajouteQuestion(nomRepertoire,enonce) {
         '}'
     const donnee = callAPI(query);
     donnee.then(object => {
+	if(typeof object.data!=="undefined"){
         let question = object.data.getQuestionByIntitule
         let button = "<div class=\"btn-repertoire\"  style='margin-top: 2px;'><button id='ModifierQuestion_"+question.id_quest+"_"+nomRepertoire+"' type=\"button\" class=\"btn btn-lg btn-info btn-block\" data-toggle='modal' data-target='#modalPoll-1' style=\"width: 79%\">" + enonce + "</button> \ " +
             "<button class='btn btn-danger' id='sup' style='width: 20%; height: 45px;'>supprimer</button></div>";
         let list_question = "#list_" + nomRepertoire.replace(/\s+/,'');
 
         $(button).appendTo(list_question);
+		}
+		else{
+			console.error("object.data is undefined")
+		}
     })
 }
 
@@ -320,6 +327,11 @@ function ajouterRepertoire(nomNouveauRep) {
 
     $("#nouveauRep").attr("id", id_rep);
     $("#AjouterQuestion_" + nomNouveauRep).attr("id", id_rep_quest);
+	//permet de rendre "reinitialiser" la modal quand on clique dessus
+	$("#AjouterQuestion_" + nomNouveauRep).click(()=>{
+													document.getElementById("editeurQuill-enonce").firstElementChild.innerHTML="";
+																	$('#questionOuverte').css('display','none');
+																	$('#questionChoix').css('display','initial');	})
     $("#listQuestion").attr("id", id_list_quest);
 
     $(id_rep).val('');
@@ -358,10 +370,10 @@ function isGoodForm(){
     return isgood;
 }
 
-//ne fait plus rien maintenant car le code est du html
+//premets de mieux formatter les query
 function manageDoubleQuote(stringToManage) {
-    	
-	return stringToManage.replaceAll("\\", "\\\\").replaceAll('"', '\\\"')
+		
+	return stringToManage.replaceAll("\\", "\\\\").replaceAll('"', '\\\"').replaceAll("\n","\\n")
 	
 }
 
@@ -611,27 +623,69 @@ $(document).on('click','.row button',function () {
         donnee.then((object) => {
             let question = object.data.getQuestionById;
             $('#ModifierQuestion').attr('name', question.id_quest);
-            $('#enonceQuestion').val(question.intitule);
+           document.getElementById('editeurQuill-enonce').firstElementChild.innerHTML=question.intitule;
 
 
-		if (question.choixUnique == 1) {
-			$('#TypeChoix').val('multiple');
-		} else if (question.choixUnique == 2) {
-			$('#TypeChoix').val('ouverte');
-		} else {
-			 $('#TypeChoix').val('unique')
+		console.log("le choix de la question est : ",question.choixUnique);
+		
+		//charge la partie "questionChoix" de la modal en fonction du type de question 
+		switch (question.choixUnique)
+		{
+			case 1 : {
+				$('#questionOuverte').css('display','none');
+				$('#questionChoix').css('display','initial');
+				
+				$('#TypeChoix').val('multiple');
+				let numberOfGoodAnswers = question.reponsesBonnes.length;
+				console.log("charge la modification  pour choix multiple")
+            	for (let j=1; j<=numberOfGoodAnswers; j++) {
+            	    $('#Choix'+j).val(question.reponsesBonnes[j-1]);
+					$('#Choix'+j).css('background-color','green')
+					$('#radio-'+j+'79').attr('type', 'checkbox');
+             	    $('#radio-'+j+'79').prop('checked', true);
+            	}
+	            for (let k=numberOfGoodAnswers+1; k<=4; k++) {
+	                $('#Choix'+k).val(question.reponsesFausses[4-k]);
+					$('#Choix'+k).css('background-color','red')
+					$('#radio-'+k+'79').attr('type', 'checkbox');
+	                $('#radio-'+k+'79').prop('checked', false);
+	            }
+
+			  break;
+			}
+			case 2 : {
+				
+				$('#questionOuverte').css('display','initial');
+				$('#questionChoix').css('display','none');
+				$('#TypeChoix').val('ouverte');
+				
+				 break;
+			}
+			
+			default : {
+				
+				
+				$('#questionOuverte').css('display','none');
+				$('#questionChoix').css('display','initial');
+				$('#TypeChoix').val('unique');
+				
+				let numberOfGoodAnswers = question.reponsesBonnes.length;
+				
+            	for (let j=1; j<=numberOfGoodAnswers; j++) {
+            	    $('#Choix'+j).val(question.reponsesBonnes[j-1]);
+					$('#Choix'+j).css('background-color','green')
+             	    $('#radio-'+j+'79').prop('checked', true);
+            	}
+	            for (let k=numberOfGoodAnswers+1; k<=4; k++) {
+	                $('#Choix'+k).val(question.reponsesFausses[4-k]);
+					$('#Choix'+k).css('background-color','red')
+	                $('#radio-'+k+'79').prop('checked', false);
+	            }}
 		}
+		
            		
-            $('#TypeChoix').click();
-            let numberOfGoodAnswers = question.reponsesBonnes.length;
-            for (let j=1; j<=numberOfGoodAnswers; j++) {
-                $('#Choix'+j).val(question.reponsesBonnes[j-1]);
-                $('#radio-'+j+'79').prop('checked', true);
-            }
-            for (let k=numberOfGoodAnswers+1; k<=4; k++) {
-                $('#Choix'+k).val(question.reponsesFausses[4-k]);
-                $('#radio-'+k+'79').prop('checked', false);
-            }
+            $('#TypeChoix').click(); 
+
         });
     }
 });
