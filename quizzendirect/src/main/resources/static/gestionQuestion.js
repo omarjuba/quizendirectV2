@@ -365,7 +365,8 @@ function isGoodForm(){
 	    });
 	}
 	if ($('#TypeChoix').val().toString() == "ouverte") {
-			isgood = true;
+        //verife que toutes les questions ouvertes sont remplies
+        Array.from(document.getElementById("reponses-container").querySelectorAll("[type=text]")).forEach((rep)=>{if(rep.value=="")isgood=false;})
 	}
     return isgood;
 }
