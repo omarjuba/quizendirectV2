@@ -36,11 +36,12 @@ public class SendMailController {
     	SendMailService sendmailservice = new SendMailService(javaMailSender);   
     	try {
     		sendmailservice.sendEmail(to, Body, "récapitulatif du Quiz");
+    		return "Mail sent";
     	}
     	catch(MessagingException e) {
-    		
+    		return "error";
     	}
-        return "Mail sent";
+        
     }
     
 }
