@@ -1,12 +1,10 @@
 package fr.univangers.services;
 
-import javax.mail.Message;
+
 import javax.mail.MessagingException;
-import javax.mail.Multipart;
 import javax.mail.internet.MimeMessage;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
@@ -21,7 +19,7 @@ public class SendMailService {
 		this.javaMailSender = javaMailSender;
 	}
 	
-	public void sendEmail(String to, String mailBody, String mailTopic) throws MessagingException{
+	public int sendEmail(String to, String mailBody, String mailTopic) throws MessagingException{
 		
 		MimeMessage simpleMailMessage = javaMailSender.createMimeMessage();
 		boolean multipart = true;
@@ -32,6 +30,7 @@ public class SendMailService {
 		helper.setSubject(mailTopic);
 		this.javaMailSender.send(simpleMailMessage);
 		
+		return 1;
 	}
 	
 	

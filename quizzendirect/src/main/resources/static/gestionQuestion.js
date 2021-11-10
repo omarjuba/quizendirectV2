@@ -3,7 +3,7 @@
 	//questionOuverte
 	//si la valeur = ouverte => afficher questionouverte et cacher questionChoix sinon contraire
 	if(this.value === 'ouverte') {
-		$('#question-title').text('saisire les bonnes reponses');
+		$('#question-title').text('saisir les bonnes reponses');
 		$('#questionChoix').hide();
 		$('#questionOuverte').show();
         document.querySelector('#reponses-container').innerHTML = '';

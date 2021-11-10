@@ -11,5 +11,7 @@
 
 5 npm install cypress --save-dev
 
-6 lancer cypress: ./node_modules/.bin/cypress open
+6 mettre le repertoire QED-TEST dans ./cypress/integration
+
+7 lancer cypress: ./node_modules/.bin/cypress open
 

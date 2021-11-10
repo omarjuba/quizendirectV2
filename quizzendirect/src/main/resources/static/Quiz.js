@@ -50,23 +50,49 @@ async function closeQuizz(message){
 		if(getCookie("studentmail") !=="" ){	
 			let MailBody ="";
 				MailBody = MailBody + "<fieldset><legend>Récapitulatif de votre Quiz</legend>";
-			
-			for(var i = 0; i < allQuestion.length; ++i){
-				MailBody = MailBody + "<h3>N°"+(i+1).toString()+" "+allQuestion[i].question+":</h3>";
+			let num = 1;
+			for(var i = 0; i < allQuestion.length;){
+				let votrereponse ="";
+				let enonce=""; 
+				if(i+1 < allQuestion.length){
+					if(allQuestion[i].question == allQuestion[i+1].question){
+						
+						votrereponse = votrereponse + allQuestion[i].studentAnswer+","+allQuestion[i+1].studentAnswer;
+						enonce = enonce + allQuestion[i].question.substring(3, allQuestion[i].question.length-4);
+						i = i + 2;
+					}
+					else {
+						
+						
+					votrereponse = votrereponse + allQuestion[i].studentAnswer;
+					enonce = enonce + allQuestion[i].question.substring(3, allQuestion[i].question.length-4);
+					++i;
+					}
+					
+				}
+				else{
+					
+					votrereponse = votrereponse + allQuestion[i].studentAnswer;
+					enonce = enonce + allQuestion[i].question.substring(3, allQuestion[i].question.length-4);
+					++i;
+				}
+				MailBody = MailBody + "<h3>N°"+(num).toString()+" "+enonce+":</h3>";
 				MailBody = 	MailBody + "<ul>";
-				MailBody = 	MailBody + "<li>Votre réponse: "+allQuestion[i].studentAnswer+"</li>";
+				MailBody = 	MailBody + "<li>Votre réponse: "+votrereponse+"</li>";
 				
 				var propositions =(laquestion.reponsesBonnes).concat(laquestion.reponsesFausses);
 	    		propositions.sort(() => Math.random() - 0.5);
 				
-				MailBody = MailBody + "<li> la bonne réponse :";
+				MailBody = MailBody + "<li>Réponse correcte :";
 				for(var j = 0; j<propositions.length;++j){
 					if(reponseIsGood(laquestion.reponsesBonnes,propositions[j])) {
-						if(j == propositions.length -1 ) MailBody = 	MailBody +propositions[j]+" ";
+						
+						if(j == propositions.length) MailBody = 	MailBody +propositions[j];
 						else MailBody = MailBody +propositions[j]+", ";
 					}
 				}
 				MailBody = 	MailBody + "</li></ul>";
+				++num;
 			}
 			MailBody = 	MailBody + "</fieldset>";
 			
