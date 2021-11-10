@@ -1,4 +1,4 @@
-package fr.univangers;
+package fr.univangers.UnitTest;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
