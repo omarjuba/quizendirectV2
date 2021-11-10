@@ -156,29 +156,82 @@ function getQuestion(question) {
     propositions.sort(() => Math.random() - 0.5);
 
 	
+	console.log("GetQuestion type Question", typeof typeQuestion)
+	console.log("prop",propositions)
 	/* Remplis les propositions des questions */
 	/* Les choix pour les questions unique et multiple*/
 	/* Un input type text pour les questions ouvertes*/
-	if (typeQuestion < 2) {
-		$(".quizLibre").attr('style', 'display:none');
-		$(".quiz").attr('style', 'display:unset');
-		$(".btn-validerMultiple").attr('style', 'display:none');
-		$("label").attr('style','');
-		$("label").attr('checked', false);
-		LesReponses = [];
-		if (typeQuestion == 1) {
-			$('input[name="q_answer"]').attr('type','checkbox');
-			$(".btn-validerMultiple").attr('style', 'display:unset');
-		} 
-	    for (var i = 0; i < propositions.length; i++) {
-	        if (propositions[i] != "") 
-	            $("#proposition" + (i + 1) + "").html(propositions[i]);
-	    }
- 	} else {
-		$(".quizLibre").attr('style', 'display:unset');
-		$(".quiz").attr('style', 'display:none');
-		$('input[name="answer_ouverte"]').val('');
+	switch(typeQuestion){
+		case "0" : {
+			console.log("Question Unique")
+			//traitement question unique
+				
+			$("#quizLibre").css("display","none");
+			$("#quizMultiple").css("display","none");
+			$("#quizUnique").css("display","inline");
+
+			$("label").attr('style','');
+			$("label").attr('checked', false);
+			LesReponses = [];
+			let divUniq=document.getElementById("quizUnique");
+			for (let i = 0; i < propositions.length; i++) {
+				console.log("prop"+i,propositions[i]);
+				if (propositions[i] != "") {
+					divUniq.querySelector(".proposition"+(i+1)).innerHTML=propositions[i];
+					//$("#proposition" + (i + 1) + "").html(propositions[i]);
+				}		
+			}
+			break;	
+		}
+		
+		case "1" : {
+			console.log("Question Unique")
+			//traitement question multiple
+			$("#quizLibre").css("display","none");
+			$("#quizMultiple").css("display","inline");
+			$("#quizUnique").css("display","none");
+
+			$("label").attr('style','');
+			$("label").attr('checked', false);
+			LesReponses = [];
+		
+	    	let divMult=document.getElementById("quizMultiple");
+			for (let i = 0; i < propositions.length; i++) {
+				console.log("prop"+i,propositions[i]);
+				if (propositions[i] != "") {
+					divMult.querySelector(".proposition"+(i+1)).innerHTML=propositions[i];
+					//$("#proposition" + (i + 1) + "").html(propositions[i]);
+				}		
+			}
+			break;	
+		}
+		case "2" : {
+			console.log("Question Unique")
+			//traitement question ouvrete
+			$("#quizLibre").css("display","inline");
+			$("#quizMultiple").css("display","none");
+			$("#quizUnique").css("display","none");	
+			$('input[name="answer_ouverte"]').val('');
+			break;	
+		}
+		
+		default : {console.error("Question not recognized")}
 	}
+
+	// if (typeQuestion < 2) {
+	// 	$(".quizLibre").attr('style', 'display:none');
+	// 	$(".quiz").attr('style', 'display:unset');
+	// 	$(".btn-validerMultiple").attr('style', 'display:none');
+	// 	$("label").attr('style','');
+	// 	$("label").attr('checked', false);
+	// 	LesReponses = [];
+		
+	//     for (var i = 0; i < propositions.length; i++) {
+	//         if (propositions[i] != "") 
+	//             $("#proposition" + (i + 1) + "").html(propositions[i]);
+	//     }
+ 	// } 
+	
 	 
 	
     /* décrémente le timer */
@@ -235,21 +288,24 @@ function supprimerReponse(reponse) {
 	}
 }
 
+
 /* Au chargement */
 $(function () {
+
     /* Au démarrage, en attente d'une question */
     $('#loadbar').show();
-    $("#quiz").fadeOut();
-	$("#quizLibre").fadeOut();
+    // $("#quiz").fadeOut();
+	// $("#quizLibre").fadeOut();
     /* Quand un étudiant clique sur une réponse, le chargement s'affiche */
 	//$(":input[name='q_answer']").attr('checked', false); => OK
 	$("label").attr('checked', false);
-	$("label").click(function () {
-		var allInputs = $(":input[name='q_answer']").attr('type'); //afficher le type de input 
-		
-        if(boolQuery) {
-			if (allInputs == "checkbox")
-			{
+
+	//fonction pour chaque label en fonction de la div
+	Array.from(document.querySelectorAll("#quizMultiple > label"))
+		.forEach(e=>e.onclick=function(){
+			
+			if(boolQuery) {
+
 				boolQuery=false
 				var checkVal = $(this).attr("checked");
 				console.log(checkVal);
@@ -266,17 +322,61 @@ $(function () {
 					supprimerReponse(reponseValue);
 					console.log(LesReponses);
 				}
-			} else {
-				boolQuery=false
-	            var reponseValue = $(this).children(4)[2].innerHTML
-	            sendReponse(reponseValue);
-	            $('#loadbar').show();
-	            $("#quiz").fadeOut();
+
 			}
-        }else boolQuery = true 
-    });
+			else boolQuery = true 
+		})
+
+
+	Array.from(document.querySelectorAll("#quizUnique > label"))
+	.forEach(e=>e.onclick=function(){
+	
+		if(boolQuery) {
+				boolQuery=false
+				var reponseValue = $(this).children(4)[2].innerHTML
+				sendReponse(reponseValue);
+				$('#loadbar').show();
+				$("#quizUnique").fadeOut();
+			
+		}
+		else boolQuery = true 
+
+});
+
+	// $("label").click(function () {
+	// 	var allInputs = $(":input[name='q_answer']").attr('type'); //afficher le type de input 
+		
+    //     if(boolQuery) {
+	// 		if (allInputs == "checkbox")
+	// 		{
+	// 			boolQuery=false
+	// 			var checkVal = $(this).attr("checked");
+	// 			console.log(checkVal);
+	// 			if (checkVal == undefined) {
+	// 				$(this).attr("checked", true);
+	// 				$(this).css('background-color','#1BADCD');
+	// 				var reponseValue = $(this).children(4)[2].innerHTML
+	// 				ajouterReponse(reponseValue);
+	// 				console.log(LesReponses);
+	// 			} else if (checkVal == "checked") {
+	// 				$(this).attr("checked", false);
+	// 				$(this).attr('style','');
+	// 				var reponseValue = $(this).children(4)[2].innerHTML
+	// 				supprimerReponse(reponseValue);
+	// 				console.log(LesReponses);
+	// 			}
+	// 		} else {
+	// 			boolQuery=false
+	//             var reponseValue = $(this).children(4)[2].innerHTML
+	//             sendReponse(reponseValue);
+	//             $('#loadbar').show();
+	//             $("#quiz").fadeOut();
+	// 		}
+    //     }else boolQuery = true 
+    // });
 	
     $('#btnReponseLibre').click(function () {
+		console.log("Libre clicked")
         var reponseValue = $('.reponse').val();
         sendReponse(reponseValue);
         $('#loadbar').show();
@@ -288,9 +388,10 @@ $(function () {
 		for (let reponseValue of LesReponses) {
 			sendReponse(reponseValue);
 			$('#loadbar').show();
-            $("#quiz").fadeOut();
+            $("#quizMultiple").fadeOut();
 		}
 	});
+
 });
 
 

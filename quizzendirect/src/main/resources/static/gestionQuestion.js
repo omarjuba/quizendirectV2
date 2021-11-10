@@ -385,6 +385,7 @@ $(document).on('click','#AjoutQuestion',function () {
     let choix = 0;
     if( $('#TypeChoix').val().toString() == "multiple") {
 		choix = 1;
+        console.log("Choix de la question :",choix);
 	} else if ($('#TypeChoix').val().toString() == "ouverte") {
 		choix = 2;
 	}
