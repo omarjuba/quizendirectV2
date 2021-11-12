@@ -194,10 +194,11 @@ function enregistrementQuestion(enonce,choix,reponseBonnes,reponseFausses,time, 
         "}" +
         "}\n" +
         "}"
+	console.log("Create Question :\n",enregistrementQuestion);
     callAPI(enregistrementQuestion).
 	then(reponse => {
 						
-						
+						console.log(reponse);
 						if( typeof reponse.data==="undefined")
 						{
 							alert("erreur la question n'a pas été créée\n"+reponse.errors[0].message)
@@ -207,6 +208,10 @@ function enregistrementQuestion(enonce,choix,reponseBonnes,reponseFausses,time, 
 							
 							alert("erreur la question n'a pas été créée \n"+reponse.errors[0].message);
 						}
+						else if (reponse.data.createQuestion.__typename=="Error"){
+							alert("erreur la question n'a pas été créée\n"+reponse.data.createQuestion.message);
+						}
+						
 						
 						} );
 }
@@ -385,7 +390,6 @@ $(document).on('click','#AjoutQuestion',function () {
     let choix = 0;
     if( $('#TypeChoix').val().toString() == "multiple") {
 		choix = 1;
-        console.log("Choix de la question :",choix);
 	} else if ($('#TypeChoix').val().toString() == "ouverte") {
 		choix = 2;
 	}
@@ -421,6 +425,7 @@ $(document).on('click','#AjoutQuestion',function () {
 		$('.reponsesOuverte').each(function() {
 			let input_reponse_ouverte = $(this).val().toString();
 			reponsesBonnes.push("\"" + manageDoubleQuote(input_reponse_ouverte) + "\"");
+			
 		});
 		}
 
