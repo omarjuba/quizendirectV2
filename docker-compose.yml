@@ -1,15 +1,28 @@
-version: "2"
+version: '3.5'
 services:
   api:
     build:
       context: ./QuizzAPI
     ports:
      - 20020:20020
+    environment: 
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/postgres
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: root    
+      SPRING.JPA.HIBERNATE.DDL-AUTO: create
+
+    depends_on:
+      - db 
+    networks: 
+      - postgres
+      
   frontapp:
     build:
       context: ./quizzendirect
     ports:
      - 8081:8081
+    networks: 
+      - postgres
   proxy:
     image: nginx
     volumes:
@@ -17,5 +30,29 @@ services:
       - ./conf.d/nginx/proxy_params:/etc/nginx/proxy_params
 
     ports: 
-      - 80:80
+      - 81:80
+    depends_on:
+      - api
+      - frontapp
+    networks: 
+      - postgres
+  db:
+    image: postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: root
+      PGDATA: /data/postgres
+    volumes:
+       - postgres:/data/postgres
 
+    ports: 
+      - 5432:5432
+    networks:
+      - postgres
+    restart: unless-stopped
+
+networks:
+  postgres:
+
+volumes:
+    postgres:
