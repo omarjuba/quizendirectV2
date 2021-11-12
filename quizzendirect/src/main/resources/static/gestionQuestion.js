@@ -481,16 +481,24 @@ $(document).on('click','#ModifierQuestion',function () {
     if(!isGoodForm()){
         alert("Formulaire mal rempli ! ");
     } else {
-        //Fonction qui rempli le tableau de reponsesBonnes et Fausse en fonction des réponses sélectionnées
-        $('input[name="group1"]').each(function () {
-            let label_next = $(this).next();
-            let input_into_the_label = label_next.children().val().toString();
-            if (answerschecked.indexOf($(this).val()) !== -1) {
-                reponsesBonnes.push("\"" + input_into_the_label + "\"");
-            } else {
-                reponsesFausse.push("\"" + input_into_the_label + "\"");
-            }
-        });
+		if(choix==2){
+			//récupère les reponses des inputs
+	         Array.from(document.querySelector("#reponses-container").querySelectorAll("input"))
+				.forEach((input) => {;console.log(input.value);reponsesBonnes.push("\""+input.value+"\"")})
+  
+		}
+		else{
+	        //Fonction qui rempli le tableau de reponsesBonnes et Fausse en fonction des réponses sélectionnées
+	        $('input[name="group1"]').each(function () {
+	            let label_next = $(this).next();
+	            let input_into_the_label = label_next.children().val().toString();
+	            if (answerschecked.indexOf($(this).val()) !== -1) {
+	                reponsesBonnes.push("\"" + input_into_the_label + "\"");
+	            } else {
+	                reponsesFausse.push("\"" + input_into_the_label + "\"");
+	            }
+	        });
+		}
 
         let token = getCookie("token")
         let idQuest = $('#ModifierQuestion').attr('name');
@@ -499,6 +507,7 @@ $(document).on('click','#ModifierQuestion',function () {
             "  (token : \""+ token +"\" , id_quest: " + idQuest + ",\n" +
             "  intitule: \"" + manageDoubleQuote(enonce) + "\",\n" +
             "    choixUnique: "+ choix +",\n" +
+			"time : 10,"+
             "    reponsesBonnes: [\n";
         reponsesBonnes.forEach(reponse => {
                 updateQuery += "      " + reponse.replaceAll("\\", "\\\\") + "\n"
@@ -671,7 +680,8 @@ $(document).on('click','.row button',function () {
 				for(let i=1;i<=question.reponsesBonnes.length;i++){
 					str+="<div class=\"form-inline mb-2\">"
 					+"<label>reponse"+i+" : </label>"
-					+"<input class=\"reponsesOuverte\" type=\"text\" value=\""+question.reponsesBonnes[i-1]+"\">";
+					+"<input class=\"reponsesOuverte\" type=\"text\" value=\""+question.reponsesBonnes[i-1]+"\">"
+					+"</div>";
 				}
 				$("#reponses-container").html(str);
 					
