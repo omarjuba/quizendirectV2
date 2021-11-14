@@ -5,7 +5,7 @@ var allQuestion =[];
 // Boolean used as a workaround to avoid the fact that the click event is launch twice when a answer is chosen
 var boolQuery = true ;
 // type de question envoyé par le prof. 0 pour une question unique, 1 pour une question multiple et 2 pour une question ouverte
-var typeQuestion = -1;
+var typeQuestion =-1;
 //tableau qui contient les réponses sélectionnées
 var LesReponses = [];
 // variable pour vérifier si une réponse est dans le tableau LesReponses ou pas
@@ -33,7 +33,9 @@ var ReponseDansTableau = false;
             	closeQuizz(text.body);
 		});
 		stompClient.subscribe('/quiz/salon/gettype/' + getQueryVariable("codeAcces"), function (text) {
-			typeQuestion = text.body;
+			
+			typeQuestion = parseInt(text.body,10);
+			console.log("Type de Question change : ",typeQuestion)
         });
     });
 })();
@@ -129,6 +131,7 @@ var numero_question = 1;
 
 function getQuestion(question) {
 	
+	console.log("Get Question question récupérée : ",question);
     laquestion = question;
     /* Cache le chargement et affiche la question */
     $('#loadbar').hide();
@@ -156,13 +159,14 @@ function getQuestion(question) {
     propositions.sort(() => Math.random() - 0.5);
 
 	
-	console.log("GetQuestion type Question", typeof typeQuestion)
+	console.log("GetQuestion - type : ", typeof typeQuestion , ", value : ",typeQuestion)
+	console.log("prop",propositions)
 	console.log("prop",propositions)
 	/* Remplis les propositions des questions */
 	/* Les choix pour les questions unique et multiple*/
 	/* Un input type text pour les questions ouvertes*/
-	switch(typeQuestion){
-		case "0" : {
+	switch(typeQuestion ){
+		case 0 : {
 			console.log("Question Unique")
 			//traitement question unique
 				
@@ -184,8 +188,8 @@ function getQuestion(question) {
 			break;	
 		}
 		
-		case "1" : {
-			console.log("Question Unique")
+		case 1 : {
+			console.log("Question multiple")
 			//traitement question multiple
 			$("#quizLibre").css("display","none");
 			$("#quizMultiple").css("display","inline");
@@ -205,7 +209,7 @@ function getQuestion(question) {
 			}
 			break;	
 		}
-		case "2" : {
+		case 2 : {
 			console.log("Question Unique")
 			//traitement question ouvrete
 			$("#quizLibre").css("display","inline");
@@ -215,7 +219,7 @@ function getQuestion(question) {
 			break;	
 		}
 		
-		default : {console.error("Question not recognized")}
+		default : {console.error("Question not recognized"); alert("La question n'a pas pu être chargée correctement'")}
 	}
 
 	// if (typeQuestion < 2) {
@@ -248,7 +252,9 @@ function getQuestion(question) {
             time--;
         }
         $('#loadbar').show();
-        $("#quiz").fadeOut();
+		$('#enonce').fadeOut();
+        $("#quizUnique").fadeOut();
+		$("#quizMultiple").fadeOut();
 		$("#quizLibre").fadeOut();
     }
     reduceTime();
@@ -407,7 +413,9 @@ function sendReponse(reponseVal) {
             "  }\n" +
             "}"
 
-        const donnee = callAPI(query);
+        const donnee = callAPI(query)
+						.then(response => console.log(response)); 
+		
 		
 		var alldata = {"question" : laquestion.intitule,"choix" : laquestion.choixUnique ,"bonneReponse" : laquestion.reponsesBonnes,"bonneFausse" : laquestion.reponsesFausses  ,"studentAnswer" : reponseVal};
 		allQuestion.push(alldata);
