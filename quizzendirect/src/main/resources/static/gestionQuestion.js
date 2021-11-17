@@ -740,11 +740,7 @@ $(document).on('click',"#TypeChoix",function () {
     $choix = $(this).val().toString();
     if( $choix == "multiple") {
         $('.form-check-input').attr('type','checkbox');
-    }
-	else if ($choix == "ouverte") {
-	}
-    else
-    {
+    } else if ($choix == "unique") {
         $('.form-check-input').attr('type','radio');
         let i=0;
         $('input[name="group1"]').each(function (){
@@ -756,7 +752,9 @@ $(document).on('click',"#TypeChoix",function () {
 
             i++;
         })
-    }
+    } else if ($choix == "ouverte") {
+		$('.form-check-input').attr('type','radio');
+	}
 });
 //Function qui gère le changement de couleur des reponses : Vert => Bonne reponse ,Rouge => mauvaise réponse
 $(document).on('click','input[name="group1"]',function (){

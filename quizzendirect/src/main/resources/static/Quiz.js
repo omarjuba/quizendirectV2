@@ -173,6 +173,7 @@ function getQuestion(question) {
 	/* Remplis les propositions des questions */
 	/* Les choix pour les questions unique et multiple*/
 	/* Un input type text pour les questions ouvertes*/
+
 	switch(question.choixUnique){
 		case 0 : {
 			console.log("Question Unique")
