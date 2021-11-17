@@ -162,6 +162,7 @@ function getQuestion(question) {
 	if (typeQuestion < 2) {
 		$(".quizLibre").attr('style', 'display:none');
 		$(".quiz").attr('style', 'display:unset');
+		
 		$(".btn-validerMultiple").attr('style', 'display:none');
 		$("label").attr('style','');
 		$("label").attr('checked', false);
@@ -169,12 +170,14 @@ function getQuestion(question) {
 		if (typeQuestion == 1) {
 			$('input[name="q_answer"]').attr('type','checkbox');
 			$(".btn-validerMultiple").attr('style', 'display:unset');
-		} 
+		} else if (typeQuestion == 0) {
+			$('input[name="q_answer"]').attr('type','radio');
+		}
 	    for (var i = 0; i < propositions.length; i++) {
 	        if (propositions[i] != "") 
 	            $("#proposition" + (i + 1) + "").html(propositions[i]);
 	    }
- 	} else {
+ 	} else if (typeQuestion == 2 ){
 		$(".quizLibre").attr('style', 'display:unset');
 		$(".quiz").attr('style', 'display:none');
 		$('input[name="answer_ouverte"]').val('');
