@@ -5,7 +5,7 @@ var allQuestion =[];
 // Boolean used as a workaround to avoid the fact that the click event is launch twice when a answer is chosen
 var boolQuery = true ;
 // type de question envoyé par le prof. 0 pour une question unique, 1 pour une question multiple et 2 pour une question ouverte
-var typeQuestion =-1;
+//var typeQuestion =-1; useless
 //tableau qui contient les réponses sélectionnées
 var LesReponses = [];
 // variable pour vérifier si une réponse est dans le tableau LesReponses ou pas
@@ -14,6 +14,7 @@ var ReponseDansTableau = false;
 
 
 (function connect() {
+	console.log("connect begin")
     let environement = window.location.hostname
     if (environement == "localhost"){
         environement = "://" + environement + ":20020";
@@ -25,18 +26,25 @@ var ReponseDansTableau = false;
     stompClient = Stomp.over(socket);
     stompClient.connect({}, function (frame) {
 
-        // ajout du code d'accés selon la variable en get dans l'url
+	
+	  // ajout du code d'accés selon la variable en get dans l'url
         stompClient.subscribe('/quiz/salon/' + getQueryVariable("codeAcces"), function (question) {
-            getQuestion(JSON.parse(question.body));
-        });
-		stompClient.subscribe('/quiz/salon/closed/' + getQueryVariable("codeAcces"), function (text) {
-            	closeQuizz(text.body);
-		});
+		getQuestion(JSON.parse(question.body));
+       		 });
+
+		//useless Subscribe
+		/*
 		stompClient.subscribe('/quiz/salon/gettype/' + getQueryVariable("codeAcces"), function (text) {
-			
 			typeQuestion = parseInt(text.body,10);
 			console.log("Type de Question change : ",typeQuestion)
-        });
+			console.log("third sub => OK")
+
+		}); */
+
+		stompClient.subscribe('/quiz/salon/closed/' + getQueryVariable("codeAcces"), function (text) {
+            	closeQuizz(text.body);
+				console.log("sec sub => OK")
+		});
     });
 })();
 
@@ -159,13 +167,13 @@ function getQuestion(question) {
     propositions.sort(() => Math.random() - 0.5);
 
 	
-	console.log("GetQuestion - type : ", typeof typeQuestion , ", value : ",typeQuestion)
+	console.log("GetQuestion - type : , value : ",question.choixUnique)
 	console.log("prop",propositions)
 	console.log("prop",propositions)
 	/* Remplis les propositions des questions */
 	/* Les choix pour les questions unique et multiple*/
 	/* Un input type text pour les questions ouvertes*/
-	switch(typeQuestion ){
+	switch(question.choixUnique){
 		case 0 : {
 			console.log("Question Unique")
 			//traitement question unique
@@ -252,7 +260,7 @@ function getQuestion(question) {
             time--;
         }
         $('#loadbar').show();
-		$('#enonce').fadeOut();
+		
         $("#quizUnique").fadeOut();
 		$("#quizMultiple").fadeOut();
 		$("#quizLibre").fadeOut();
@@ -300,7 +308,8 @@ $(function () {
 
     /* Au démarrage, en attente d'une question */
     $('#loadbar').show();
-    // $("#quiz").fadeOut();
+	//$("#enonce").show();
+	 // $("#quiz").fadeOut();
 	// $("#quizLibre").fadeOut();
     /* Quand un étudiant clique sur une réponse, le chargement s'affiche */
 	//$(":input[name='q_answer']").attr('checked', false); => OK
@@ -390,12 +399,14 @@ $(function () {
     });
 
 
-	$('#btnValiderMultiple').click(function () {	
+	$('#btnValiderMultiple').click(function () {
+		console.log("Reponses à la question : ",LesReponses);
 		for (let reponseValue of LesReponses) {
+			console.log("réponse ",reponseValue," envoyée");
 			sendReponse(reponseValue);
+		}
 			$('#loadbar').show();
             $("#quizMultiple").fadeOut();
-		}
 	});
 
 });
@@ -404,15 +415,19 @@ $(function () {
 
 function sendReponse(reponseVal) {
     if (laquestion != null) {
+		console.log("réponse envoyée : ",reponseVal);
         //TODO ajouter IF() ELSE
         let query = "mutation{\n" +
             "  updateReponse(reponse : \"" + reponseVal.replaceAll("\\", "\\\\") + "\" , id_quest: " + laquestion.id_quest + " ){\n" +
             "  ... on Question {\n" +
-            "    id_quest\n" +
-            "  }" +
+            "    id_quest,\n" +
+			"	 nbReponse\n" +
             "  }\n" +
-            "}"
+			"...on Error { message }\n"+
+            "  }\n" +
+            "}";
 
+		console.log("SEND REPONSE :",query);
         const donnee = callAPI(query)
 						.then(response => console.log(response)); 
 		

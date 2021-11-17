@@ -155,7 +155,7 @@ function questionadded(id_rep,questions,enonce,choix,reponseBonnes,reponseFausse
         '     }' +
         '   }' +
         ' }'
-    const donnee =  callAPI(query);
+    const donnee =  callAPI(query).then(object=>console.log("Update Repertoire réponse : ",object));
 }
 function getIdRepertory(data,userId_ens,nomrepository){
 
@@ -198,7 +198,10 @@ function enregistrementQuestion(enonce,choix,reponseBonnes,reponseFausses,time, 
     callAPI(enregistrementQuestion).
 	then(reponse => {
 						
-						console.log(reponse);
+						console.log("ajoute la question dans le repertoire, reponse :",reponse);
+						if(typeof reponse ==="undefined"){
+							alert("Erreur la question n'a pas été créée");
+						}
 						if( typeof reponse.data==="undefined")
 						{
 							alert("erreur la question n'a pas été créée\n"+reponse.errors[0].message)
@@ -257,7 +260,7 @@ function questionExiste(question)  {
 //Ajout des questions à un repertoire
 //charge les question d'un repertoire existant
 function ajouteQuestion(nomRepertoire,enonce) {
-	console.log("ajoute une question à un repertoire")
+	
     let query = '{\n' +
         '   getQuestionByIntitule(intitule : "'+ manageDoubleQuote(enonce) +'" ){' +
         '       id_quest\n' +
@@ -265,6 +268,7 @@ function ajouteQuestion(nomRepertoire,enonce) {
         '}'
     const donnee = callAPI(query);
     donnee.then(object => {
+	console.log("ajout de la question au répertoire dans le front, réponse : ",object);
 	if(typeof object.data!=="undefined"){
         let question = object.data.getQuestionByIntitule
         let button = "<div class=\"btn-repertoire\"  style='margin-top: 2px;'><button id='ModifierQuestion_"+question.id_quest+"_"+nomRepertoire+"' type=\"button\" class=\"btn btn-lg btn-info btn-block\" data-toggle='modal' data-target='#modalPoll-1' style=\"width: 79%\">" + enonce + "</button> \ " +
@@ -459,6 +463,7 @@ $(document).on('click','#AjoutQuestion',function () {
         const donnee = callAPI(query);
 
         donnee.then((object) => {
+			console.log("Ajout de la Question prmière func");
             ajouteQuestion(nomRepertoire, enonce);
             let id_rep = getIdRepertory(object.data.getEnseignantById, userId_ens, nomRepertoire);
             let questions = getQuestionByrepertoire(object.data.getEnseignantById, userId_ens, nomRepertoire);
