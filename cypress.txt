@@ -1,4 +1,4 @@
--------------------INSTALLATION CYPRESS LINUX--------------------------------
+-_-_-_-_-_-_-_-_-_-_-_-INSTALLATION CYPRESS LINUX-_-_-_-_-_-_-_-_-_-_-_-
 
 
 1 apt-get install libgtk2.0-0 libgtk-3-0 libgbm-dev libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2 libxtst6 xauth xvfb
@@ -15,3 +15,19 @@
 
 7 lancer cypress: ./node_modules/.bin/cypress open
 
+
+-_-_-_-_-_-_-_-_-_-TEST SEMI-MANUEL-_-_-_-_-__-_-_-_-_-_
+
+pour lancer les tests du salon quiz:
+1. une fois les 4 premiers tests finis (ceux qui se trouvent dans ./cypress/integration/QED-TEST)
+2. dans un navogateur se connecter avec mail: dupont.martin@univ-angers.fr et mot de passe: Dupont45Martin78
+
+3. créer un salon, copier le numéro de salon dans ./cypress/integration/TEST-SALON-QUIZ/1-test_de_reception_des_questions.js ligne 22: cy.get('#idSalon').type('numero salon')
+
+4.lancer le test qui se connectera au salon et fera un wait de 15000 ms pour vous permettre de lancer un question unique (au prealable se connecter côté enseignant pour être prêt à lancer les questions)
+
+5.un autre wait de 15000 ms pour lancer un question ouverte
+
+7.enfin un dernier wait de 15000 ms pour lancer une question multiple
+
+8.fin des tests.

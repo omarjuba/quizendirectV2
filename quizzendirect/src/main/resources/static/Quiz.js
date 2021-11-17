@@ -127,9 +127,9 @@ async function closeQuizz(message){
 			  .done(function( msg ) {
 			    console.log( "Mail Status: " + msg );
 			  });
-			await sleep(3500);
-			document.location.href = "/";
-		}	
+		}
+			await sleep(2500);
+			document.location.href = "/";	
 	}
 }
 
