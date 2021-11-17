@@ -5,7 +5,7 @@ var allQuestion =[];
 // Boolean used as a workaround to avoid the fact that the click event is launch twice when a answer is chosen
 var boolQuery = true ;
 // type de question envoyé par le prof. 0 pour une question unique, 1 pour une question multiple et 2 pour une question ouverte
-var typeQuestion = -1;
+//var typeQuestion =-1; useless
 //tableau qui contient les réponses sélectionnées
 var LesReponses = [];
 // variable pour vérifier si une réponse est dans le tableau LesReponses ou pas
@@ -14,6 +14,7 @@ var ReponseDansTableau = false;
 
 
 (function connect() {
+	console.log("connect begin")
     let environement = window.location.hostname
     if (environement == "localhost"){
         environement = "://" + environement + ":20020";
@@ -25,16 +26,25 @@ var ReponseDansTableau = false;
     stompClient = Stomp.over(socket);
     stompClient.connect({}, function (frame) {
 
-        // ajout du code d'accés selon la variable en get dans l'url
+	
+	  // ajout du code d'accés selon la variable en get dans l'url
         stompClient.subscribe('/quiz/salon/' + getQueryVariable("codeAcces"), function (question) {
-            getQuestion(JSON.parse(question.body));
-        });
+		getQuestion(JSON.parse(question.body));
+       		 });
+
+		//useless Subscribe
+		/*
+		stompClient.subscribe('/quiz/salon/gettype/' + getQueryVariable("codeAcces"), function (text) {
+			typeQuestion = parseInt(text.body,10);
+			console.log("Type de Question change : ",typeQuestion)
+			console.log("third sub => OK")
+
+		}); */
+
 		stompClient.subscribe('/quiz/salon/closed/' + getQueryVariable("codeAcces"), function (text) {
             	closeQuizz(text.body);
+				console.log("sec sub => OK")
 		});
-		stompClient.subscribe('/quiz/salon/gettype/' + getQueryVariable("codeAcces"), function (text) {
-			typeQuestion = text.body;
-        });
     });
 })();
 
@@ -50,23 +60,49 @@ async function closeQuizz(message){
 		if(getCookie("studentmail") !=="" ){	
 			let MailBody ="";
 				MailBody = MailBody + "<fieldset><legend>Récapitulatif de votre Quiz</legend>";
-			
-			for(var i = 0; i < allQuestion.length; ++i){
-				MailBody = MailBody + "<h3>N°"+(i+1).toString()+" "+allQuestion[i].question+":</h3>";
+			let num = 1;
+			for(var i = 0; i < allQuestion.length;){
+				let votrereponse ="";
+				let enonce=""; 
+				if(i+1 < allQuestion.length){
+					if(allQuestion[i].question == allQuestion[i+1].question){
+						
+						votrereponse = votrereponse + allQuestion[i].studentAnswer+","+allQuestion[i+1].studentAnswer;
+						enonce = enonce + allQuestion[i].question.substring(3, allQuestion[i].question.length-4);
+						i = i + 2;
+					}
+					else {
+						
+						
+					votrereponse = votrereponse + allQuestion[i].studentAnswer;
+					enonce = enonce + allQuestion[i].question.substring(3, allQuestion[i].question.length-4);
+					++i;
+					}
+					
+				}
+				else{
+					
+					votrereponse = votrereponse + allQuestion[i].studentAnswer;
+					enonce = enonce + allQuestion[i].question.substring(3, allQuestion[i].question.length-4);
+					++i;
+				}
+				MailBody = MailBody + "<h3>N°"+(num).toString()+" "+enonce+":</h3>";
 				MailBody = 	MailBody + "<ul>";
-				MailBody = 	MailBody + "<li>Votre réponse: "+allQuestion[i].studentAnswer+"</li>";
+				MailBody = 	MailBody + "<li>Votre réponse: "+votrereponse+"</li>";
 				
 				var propositions =(laquestion.reponsesBonnes).concat(laquestion.reponsesFausses);
 	    		propositions.sort(() => Math.random() - 0.5);
 				
-				MailBody = MailBody + "<li> la bonne réponse :";
+				MailBody = MailBody + "<li>Réponse correcte :";
 				for(var j = 0; j<propositions.length;++j){
 					if(reponseIsGood(laquestion.reponsesBonnes,propositions[j])) {
-						if(j == propositions.length -1 ) MailBody = 	MailBody +propositions[j]+" ";
+						
+						if(j == propositions.length) MailBody = 	MailBody +propositions[j];
 						else MailBody = MailBody +propositions[j]+", ";
 					}
 				}
 				MailBody = 	MailBody + "</li></ul>";
+				++num;
 			}
 			MailBody = 	MailBody + "</fieldset>";
 			
@@ -91,9 +127,9 @@ async function closeQuizz(message){
 			  .done(function( msg ) {
 			    console.log( "Mail Status: " + msg );
 			  });
-			await sleep(3500);
-			document.location.href = "/";
-		}	
+		}
+			await sleep(2500);
+			document.location.href = "/";	
 	}
 }
 
@@ -103,6 +139,7 @@ var numero_question = 1;
 
 function getQuestion(question) {
 	
+	console.log("Get Question question récupérée : ",question);
     laquestion = question;
     /* Cache le chargement et affiche la question */
     $('#loadbar').hide();
@@ -130,29 +167,84 @@ function getQuestion(question) {
     propositions.sort(() => Math.random() - 0.5);
 
 	
+	console.log("GetQuestion - type : , value : ",question.choixUnique)
+	console.log("prop",propositions)
+	console.log("prop",propositions)
 	/* Remplis les propositions des questions */
 	/* Les choix pour les questions unique et multiple*/
 	/* Un input type text pour les questions ouvertes*/
-	if (typeQuestion < 2) {
-		$(".quizLibre").attr('style', 'display:none');
-		$(".quiz").attr('style', 'display:unset');
-		$(".btn-validerMultiple").attr('style', 'display:none');
-		$("label").attr('style','');
-		$("label").attr('checked', false);
-		LesReponses = [];
-		if (typeQuestion == 1) {
-			$('input[name="q_answer"]').attr('type','checkbox');
-			$(".btn-validerMultiple").attr('style', 'display:unset');
-		} 
-	    for (var i = 0; i < propositions.length; i++) {
-	        if (propositions[i] != "") 
-	            $("#proposition" + (i + 1) + "").html(propositions[i]);
-	    }
- 	} else {
-		$(".quizLibre").attr('style', 'display:unset');
-		$(".quiz").attr('style', 'display:none');
-		$('input[name="answer_ouverte"]').val('');
+
+	switch(question.choixUnique){
+		case 0 : {
+			console.log("Question Unique")
+			//traitement question unique
+				
+			$("#quizLibre").css("display","none");
+			$("#quizMultiple").css("display","none");
+			$("#quizUnique").css("display","inline");
+
+			$("label").attr('style','');
+			$("label").attr('checked', false);
+			LesReponses = [];
+			let divUniq=document.getElementById("quizUnique");
+			for (let i = 0; i < propositions.length; i++) {
+				console.log("prop"+i,propositions[i]);
+				if (propositions[i] != "") {
+					divUniq.querySelector(".proposition"+(i+1)).innerHTML=propositions[i];
+					//$("#proposition" + (i + 1) + "").html(propositions[i]);
+				}		
+			}
+			break;	
+		}
+		
+		case 1 : {
+			console.log("Question multiple")
+			//traitement question multiple
+			$("#quizLibre").css("display","none");
+			$("#quizMultiple").css("display","inline");
+			$("#quizUnique").css("display","none");
+
+			$("label").attr('style','');
+			$("label").attr('checked', false);
+			LesReponses = [];
+		
+	    	let divMult=document.getElementById("quizMultiple");
+			for (let i = 0; i < propositions.length; i++) {
+				console.log("prop"+i,propositions[i]);
+				if (propositions[i] != "") {
+					divMult.querySelector(".proposition"+(i+1)).innerHTML=propositions[i];
+					//$("#proposition" + (i + 1) + "").html(propositions[i]);
+				}		
+			}
+			break;	
+		}
+		case 2 : {
+			console.log("Question Unique")
+			//traitement question ouvrete
+			$("#quizLibre").css("display","inline");
+			$("#quizMultiple").css("display","none");
+			$("#quizUnique").css("display","none");	
+			$('input[name="answer_ouverte"]').val('');
+			break;	
+		}
+		
+		default : {console.error("Question not recognized"); alert("La question n'a pas pu être chargée correctement'")}
 	}
+
+	// if (typeQuestion < 2) {
+	// 	$(".quizLibre").attr('style', 'display:none');
+	// 	$(".quiz").attr('style', 'display:unset');
+	// 	$(".btn-validerMultiple").attr('style', 'display:none');
+	// 	$("label").attr('style','');
+	// 	$("label").attr('checked', false);
+	// 	LesReponses = [];
+		
+	//     for (var i = 0; i < propositions.length; i++) {
+	//         if (propositions[i] != "") 
+	//             $("#proposition" + (i + 1) + "").html(propositions[i]);
+	//     }
+ 	// } 
+	
 	 
 	
     /* décrémente le timer */
@@ -169,7 +261,9 @@ function getQuestion(question) {
             time--;
         }
         $('#loadbar').show();
-        $("#quiz").fadeOut();
+		
+        $("#quizUnique").fadeOut();
+		$("#quizMultiple").fadeOut();
 		$("#quizLibre").fadeOut();
     }
     reduceTime();
@@ -209,21 +303,25 @@ function supprimerReponse(reponse) {
 	}
 }
 
+
 /* Au chargement */
 $(function () {
+
     /* Au démarrage, en attente d'une question */
     $('#loadbar').show();
-    $("#quiz").fadeOut();
-	$("#quizLibre").fadeOut();
+	//$("#enonce").show();
+	 // $("#quiz").fadeOut();
+	// $("#quizLibre").fadeOut();
     /* Quand un étudiant clique sur une réponse, le chargement s'affiche */
 	//$(":input[name='q_answer']").attr('checked', false); => OK
 	$("label").attr('checked', false);
-	$("label").click(function () {
-		var allInputs = $(":input[name='q_answer']").attr('type'); //afficher le type de input 
-		
-        if(boolQuery) {
-			if (allInputs == "checkbox")
-			{
+
+	//fonction pour chaque label en fonction de la div
+	Array.from(document.querySelectorAll("#quizMultiple > label"))
+		.forEach(e=>e.onclick=function(){
+			
+			if(boolQuery) {
+
 				boolQuery=false
 				var checkVal = $(this).attr("checked");
 				console.log(checkVal);
@@ -240,17 +338,61 @@ $(function () {
 					supprimerReponse(reponseValue);
 					console.log(LesReponses);
 				}
-			} else {
-				boolQuery=false
-	            var reponseValue = $(this).children(4)[2].innerHTML
-	            sendReponse(reponseValue);
-	            $('#loadbar').show();
-	            $("#quiz").fadeOut();
+
 			}
-        }else boolQuery = true 
-    });
+			else boolQuery = true 
+		})
+
+
+	Array.from(document.querySelectorAll("#quizUnique > label"))
+	.forEach(e=>e.onclick=function(){
+	
+		if(boolQuery) {
+				boolQuery=false
+				var reponseValue = $(this).children(4)[2].innerHTML
+				sendReponse(reponseValue);
+				$('#loadbar').show();
+				$("#quizUnique").fadeOut();
+			
+		}
+		else boolQuery = true 
+
+});
+
+	// $("label").click(function () {
+	// 	var allInputs = $(":input[name='q_answer']").attr('type'); //afficher le type de input 
+		
+    //     if(boolQuery) {
+	// 		if (allInputs == "checkbox")
+	// 		{
+	// 			boolQuery=false
+	// 			var checkVal = $(this).attr("checked");
+	// 			console.log(checkVal);
+	// 			if (checkVal == undefined) {
+	// 				$(this).attr("checked", true);
+	// 				$(this).css('background-color','#1BADCD');
+	// 				var reponseValue = $(this).children(4)[2].innerHTML
+	// 				ajouterReponse(reponseValue);
+	// 				console.log(LesReponses);
+	// 			} else if (checkVal == "checked") {
+	// 				$(this).attr("checked", false);
+	// 				$(this).attr('style','');
+	// 				var reponseValue = $(this).children(4)[2].innerHTML
+	// 				supprimerReponse(reponseValue);
+	// 				console.log(LesReponses);
+	// 			}
+	// 		} else {
+	// 			boolQuery=false
+	//             var reponseValue = $(this).children(4)[2].innerHTML
+	//             sendReponse(reponseValue);
+	//             $('#loadbar').show();
+	//             $("#quiz").fadeOut();
+	// 		}
+    //     }else boolQuery = true 
+    // });
 	
     $('#btnReponseLibre').click(function () {
+		console.log("Libre clicked")
         var reponseValue = $('.reponse').val();
         sendReponse(reponseValue);
         $('#loadbar').show();
@@ -258,29 +400,38 @@ $(function () {
     });
 
 
-	$('#btnValiderMultiple').click(function () {	
+	$('#btnValiderMultiple').click(function () {
+		console.log("Reponses à la question : ",LesReponses);
 		for (let reponseValue of LesReponses) {
+			console.log("réponse ",reponseValue," envoyée");
 			sendReponse(reponseValue);
-			$('#loadbar').show();
-            $("#quiz").fadeOut();
 		}
+			$('#loadbar').show();
+            $("#quizMultiple").fadeOut();
 	});
+
 });
 
 
 
 function sendReponse(reponseVal) {
     if (laquestion != null) {
+		console.log("réponse envoyée : ",reponseVal);
         //TODO ajouter IF() ELSE
         let query = "mutation{\n" +
             "  updateReponse(reponse : \"" + reponseVal.replaceAll("\\", "\\\\") + "\" , id_quest: " + laquestion.id_quest + " ){\n" +
             "  ... on Question {\n" +
-            "    id_quest\n" +
-            "  }" +
+            "    id_quest,\n" +
+			"	 nbReponse\n" +
             "  }\n" +
-            "}"
+			"...on Error { message }\n"+
+            "  }\n" +
+            "}";
 
-        const donnee = callAPI(query);
+		console.log("SEND REPONSE :",query);
+        const donnee = callAPI(query)
+						.then(response => console.log(response)); 
+		
 		
 		var alldata = {"question" : laquestion.intitule,"choix" : laquestion.choixUnique ,"bonneReponse" : laquestion.reponsesBonnes,"bonneFausse" : laquestion.reponsesFausses  ,"studentAnswer" : reponseVal};
 		allQuestion.push(alldata);

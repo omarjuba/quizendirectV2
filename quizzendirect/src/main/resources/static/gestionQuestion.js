@@ -3,7 +3,7 @@
 	//questionOuverte
 	//si la valeur = ouverte => afficher questionouverte et cacher questionChoix sinon contraire
 	if(this.value === 'ouverte') {
-		$('#question-title').text('saisire les bonnes reponses');
+		$('#question-title').text('saisir les bonnes reponses');
 		$('#questionChoix').hide();
 		$('#questionOuverte').show();
         document.querySelector('#reponses-container').innerHTML = '';
@@ -155,7 +155,7 @@ function questionadded(id_rep,questions,enonce,choix,reponseBonnes,reponseFausse
         '     }' +
         '   }' +
         ' }'
-    const donnee =  callAPI(query);
+    const donnee =  callAPI(query).then(object=>console.log("Update Repertoire réponse : ",object));
 }
 function getIdRepertory(data,userId_ens,nomrepository){
 
@@ -194,10 +194,14 @@ function enregistrementQuestion(enonce,choix,reponseBonnes,reponseFausses,time, 
         "}" +
         "}\n" +
         "}"
+	console.log("Create Question :\n",enregistrementQuestion);
     callAPI(enregistrementQuestion).
 	then(reponse => {
 						
-						
+						console.log("ajoute la question dans le repertoire, reponse :",reponse);
+						if(typeof reponse ==="undefined"){
+							alert("Erreur la question n'a pas été créée");
+						}
 						if( typeof reponse.data==="undefined")
 						{
 							alert("erreur la question n'a pas été créée\n"+reponse.errors[0].message)
@@ -207,6 +211,10 @@ function enregistrementQuestion(enonce,choix,reponseBonnes,reponseFausses,time, 
 							
 							alert("erreur la question n'a pas été créée \n"+reponse.errors[0].message);
 						}
+						else if (reponse.data.createQuestion.__typename=="Error"){
+							alert("erreur la question n'a pas été créée\n"+reponse.data.createQuestion.message);
+						}
+						
 						
 						} );
 }
@@ -252,7 +260,7 @@ function questionExiste(question)  {
 //Ajout des questions à un repertoire
 //charge les question d'un repertoire existant
 function ajouteQuestion(nomRepertoire,enonce) {
-	console.log("ajoute une question à un repertoire")
+	
     let query = '{\n' +
         '   getQuestionByIntitule(intitule : "'+ manageDoubleQuote(enonce) +'" ){' +
         '       id_quest\n' +
@@ -260,6 +268,7 @@ function ajouteQuestion(nomRepertoire,enonce) {
         '}'
     const donnee = callAPI(query);
     donnee.then(object => {
+	console.log("ajout de la question au répertoire dans le front, réponse : ",object);
 	if(typeof object.data!=="undefined"){
         let question = object.data.getQuestionByIntitule
         let button = "<div class=\"btn-repertoire\"  style='margin-top: 2px;'><button id='ModifierQuestion_"+question.id_quest+"_"+nomRepertoire+"' type=\"button\" class=\"btn btn-lg btn-info btn-block\" data-toggle='modal' data-target='#modalPoll-1' style=\"width: 79%\">" + enonce + "</button> \ " +
@@ -365,7 +374,13 @@ function isGoodForm(){
 	    });
 	}
 	if ($('#TypeChoix').val().toString() == "ouverte") {
-			isgood = true;
+        //verife que toutes les questions ouvertes sont remplies
+        Array.from(document.getElementById("reponses-container").querySelectorAll("[type=text]")).forEach((rep)=>{if(rep.value=="")isgood=false;})
+		
+		if(Array.from(document.getElementById("reponses-container").childNodes).length < 2)
+			{
+				isgood=false;
+			}
 	}
     return isgood;
 }
@@ -396,7 +411,7 @@ $(document).on('click','#AjoutQuestion',function () {
         alert("Question existe déjà dans un répertoire ");
     }
     else if(!isGoodForm()){
-        alert("Formulaire mal rempli ! ");
+        alert("Formulaire mal rempli ! \nAssurez vous d'avoir remplit tous les champs, et d'avoir au moins 2 réponses pour une question ouverte");
     } else {
         //Fonction qui remplie le tableau de reponsesBonnes et Fausse en fonction des réponses sélectionnées
 		if ( (choix == 0) || (choix == 1)) {
@@ -419,6 +434,7 @@ $(document).on('click','#AjoutQuestion',function () {
 		$('.reponsesOuverte').each(function() {
 			let input_reponse_ouverte = $(this).val().toString();
 			reponsesBonnes.push("\"" + manageDoubleQuote(input_reponse_ouverte) + "\"");
+			
 		});
 		}
 
@@ -447,6 +463,7 @@ $(document).on('click','#AjoutQuestion',function () {
         const donnee = callAPI(query);
 
         donnee.then((object) => {
+			console.log("Ajout de la Question prmière func");
             ajouteQuestion(nomRepertoire, enonce);
             let id_rep = getIdRepertory(object.data.getEnseignantById, userId_ens, nomRepertoire);
             let questions = getQuestionByrepertoire(object.data.getEnseignantById, userId_ens, nomRepertoire);
@@ -472,18 +489,26 @@ $(document).on('click','#ModifierQuestion',function () {
     let reponsesBonnes = [];
 
     if(!isGoodForm()){
-        alert("Formulaire mal rempli ! ");
+        alert("Formulaire mal rempli ! \nAssurez vous d'avoir remplit tous les champs, et d'avoir au moins 2 réponses pour une question ouverte");
     } else {
-        //Fonction qui rempli le tableau de reponsesBonnes et Fausse en fonction des réponses sélectionnées
-        $('input[name="group1"]').each(function () {
-            let label_next = $(this).next();
-            let input_into_the_label = label_next.children().val().toString();
-            if (answerschecked.indexOf($(this).val()) !== -1) {
-                reponsesBonnes.push("\"" + input_into_the_label + "\"");
-            } else {
-                reponsesFausse.push("\"" + input_into_the_label + "\"");
-            }
-        });
+		if(choix==2){
+			//récupère les reponses des inputs
+	         Array.from(document.querySelector("#reponses-container").querySelectorAll("input"))
+				.forEach((input) => {;console.log(input.value);reponsesBonnes.push("\""+input.value+"\"")})
+  
+		}
+		else{
+	        //Fonction qui rempli le tableau de reponsesBonnes et Fausse en fonction des réponses sélectionnées
+	        $('input[name="group1"]').each(function () {
+	            let label_next = $(this).next();
+	            let input_into_the_label = label_next.children().val().toString();
+	            if (answerschecked.indexOf($(this).val()) !== -1) {
+	                reponsesBonnes.push("\"" + input_into_the_label + "\"");
+	            } else {
+	                reponsesFausse.push("\"" + input_into_the_label + "\"");
+	            }
+	        });
+		}
 
         let token = getCookie("token")
         let idQuest = $('#ModifierQuestion').attr('name');
@@ -492,6 +517,7 @@ $(document).on('click','#ModifierQuestion',function () {
             "  (token : \""+ token +"\" , id_quest: " + idQuest + ",\n" +
             "  intitule: \"" + manageDoubleQuote(enonce) + "\",\n" +
             "    choixUnique: "+ choix +",\n" +
+			"time : 10,"+
             "    reponsesBonnes: [\n";
         reponsesBonnes.forEach(reponse => {
                 updateQuery += "      " + reponse.replaceAll("\\", "\\\\") + "\n"
@@ -518,6 +544,8 @@ $(document).on('click','#ModifierQuestion',function () {
 		console.log("modification : \n",updateQuery)
         callAPI(updateQuery).
 		
+		/*les objets renvoyés par la BDD peuvent être différents , il faut tester donc toutes les 
+		constructions potentielles pour detecter un renvoi d'erreur'*/
 		then(reponse => {
 						console.log(reponse);
 						if( typeof reponse.data!=="undefined" && !reponse.data.updateQuestion)
@@ -529,6 +557,9 @@ $(document).on('click','#ModifierQuestion',function () {
 						{
 							console.log(reponse.errors[0].message);
 							alert("erreur la question n'a pas été modifiée\n"+reponse.errors[0].message);
+						}
+						else if (typeof reponse.data.updateQuestion.message!=="undefined"){
+							alert ("erreur la question n'a pas été modifée\n"+reponse.data.updateQuestion.message);
 						}
 						} );
 		
@@ -664,7 +695,8 @@ $(document).on('click','.row button',function () {
 				for(let i=1;i<=question.reponsesBonnes.length;i++){
 					str+="<div class=\"form-inline mb-2\">"
 					+"<label>reponse"+i+" : </label>"
-					+"<input class=\"reponsesOuverte\" type=\"text\" value=\""+question.reponsesBonnes[i-1]+"\">";
+					+"<input class=\"reponsesOuverte\" type=\"text\" value=\""+question.reponsesBonnes[i-1]+"\">"
+					+"</div>";
 				}
 				$("#reponses-container").html(str);
 					
@@ -708,11 +740,7 @@ $(document).on('click',"#TypeChoix",function () {
     $choix = $(this).val().toString();
     if( $choix == "multiple") {
         $('.form-check-input').attr('type','checkbox');
-    }
-	else if ($choix == "ouverte") {
-	}
-    else
-    {
+    } else if ($choix == "unique") {
         $('.form-check-input').attr('type','radio');
         let i=0;
         $('input[name="group1"]').each(function (){
@@ -724,7 +752,9 @@ $(document).on('click',"#TypeChoix",function () {
 
             i++;
         })
-    }
+    } else if ($choix == "ouverte") {
+		$('.form-check-input').attr('type','radio');
+	}
 });
 //Function qui gère le changement de couleur des reponses : Vert => Bonne reponse ,Rouge => mauvaise réponse
 $(document).on('click','input[name="group1"]',function (){

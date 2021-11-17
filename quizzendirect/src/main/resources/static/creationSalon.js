@@ -254,12 +254,15 @@ $(document).on("click", ".button-lancer", function () {
     let query = "mutation{  " +
         "  restartQuestionById(id_quest:" + id_quest + ", token : \""+ token +"\")" +
         "  { " +
-        "    ...on Question{id_quest intitule choixUnique reponsesBonnes reponsesFausses time}\n" +
+        "    ...on Question{id_quest intitule choixUnique reponsesBonnes reponsesFausses time nbReponse}\n" +
+		"	 ...on Error{message}\n"+
         "  }" +
         "}";
+	let question={};
     const donnees = callAPI(query);
     donnees.then(object => {
-        var question = {
+		console.log("QUESTION RESTART REPONSE : ",object);	
+         question = {
             'id_quest': object.data.restartQuestionById.id_quest,
             'intitule': object.data.restartQuestionById.intitule,
             'choixUnique': object.data.restartQuestionById.choixUnique,
@@ -290,6 +293,7 @@ $(document).on("click", ".button-stat", function () {
         "}";
     const donnees = callAPI(query);
     donnees.then(object => {
+	console.log("GetQuestion : ",object);
         var question = {
             'id_quest': object.data.getQuestionById.id_quest,
             'intitule': object.data.getQuestionById.intitule,
@@ -306,67 +310,67 @@ $(document).on("click", ".button-stat", function () {
 
 
 function afficherStat(question){
-    
-var Chartlabel=[]; var Chardata=[]; var Chartcouleurs=[];
-
-
-var goodColor='rgb(50, 205, 50)'; var badColor='rgb(230, 0, 0)';
-
-var i=0;
-
- for (const reponse in question.reponses) {
-        var pourcentage = calculPourcentage(question.nbReponse[i] , question.nbReponse);
-    
-			// le nombre de réponses est entre parenthèse après l'intitulé de la réponse'
-			let label=question.reponses[i].toString()+" ("+question.nbReponse[i].toString()+")";
-	       
-		    Chartlabel.push(label);
-            Chardata.push(pourcentage.toFixed(2)) ;
+	    
+	var Chartlabel=[]; var Chardata=[]; var Chartcouleurs=[];
+	
+	
+	var goodColor='rgb(50, 205, 50)'; var badColor='rgb(230, 0, 0)';
+	
+	var i=0;
+	
+	 for (const reponse in question.reponses) {
+	        var pourcentage = calculPourcentage(question.nbReponse[i] , question.nbReponse);
+	    
+				// le nombre de réponses est entre parenthèse après l'intitulé de la réponse'
+				let label=question.reponses[i].toString()+" ("+question.nbReponse[i].toString()+")";
+		       
+			    Chartlabel.push(label);
+	            Chardata.push(pourcentage.toFixed(2));
+				
+				if(question.reponsesBonnes.includes(question.reponses[i]))
+				{
+					Chartcouleurs.push(goodColor);
+				}
+				else {
+					Chartcouleurs.push(badColor); 
+				}		 
+	        i++
+	    }
+	
+	//creation du Chart
+	var stat= document.createElement("canvas"); 
+			stat.id="myChart";
+			stat.width="800";
+			stat.height="400";
 			
-			if(question.reponsesBonnes.includes(question.reponses[i]))
-			{
-				Chartcouleurs.push(goodColor);
-			}
-			else {
-				Chartcouleurs.push(badColor); 
-			}		 
-        i++
-    }
-
-//creation du Chart
-var stat= document.createElement("canvas"); 
-		stat.id="myChart";
-		stat.width="800";
-		stat.height="400";
-		
-		var ctx = stat.getContext('2d');
-		
-        var myChart = new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: Chartlabel,
-                datasets: [{
-                    label: '% de bonne réponses',
-                    data: Chardata,
-                    backgroundColor: Chartcouleurs,
-                }]
-            },
-            options: {
-                scales: {
-                    x: {
-                        min: 0,
-                        max: 100,
-                    }
-                    
-                },
-                indexAxis: 'y',
-                responsive:false,
-            }
-        });
-
-	$("#bodyModals").html(stat)
-    $("#modalStat").css("display" , "block") 
-   // setTimeout(function() {alert(stats); }, 1);
+			var ctx = stat.getContext('2d');
+			
+	        var myChart = new Chart(ctx, {
+	            type: 'bar',
+	            data: {
+	                labels: Chartlabel,
+	                datasets: [{
+	                    label: '% de bonne réponses',
+	                    data: Chardata,
+	                    backgroundColor: Chartcouleurs,
+	                }]
+	            },
+	            options: {
+	                scales: {
+	                    x: {
+	                        min: 0,
+	                        max: 100,
+	                    }
+	                    
+	                },
+	                indexAxis: 'y',
+	                responsive:false,
+	            }
+	        });
+	
+		$("#bodyModals").html(stat)
+	    $("#modalStat").css("display" , "block") 
+	   // setTimeout(function() {alert(stats); }, 1);
 
 }
 
@@ -432,10 +436,9 @@ function disconnect() {
 };
 
 function sendQuestion(question) {
-	//console.log("sendquestion question",JSON.stringify(question))
-	//console.log("choixUnique:", question.choixUnique);
-    // ajout dans l'url le code d'accéss ( variable globale ) qui a été affecté lors de l'ouverture du salon
+	// ajout dans l'url le code d'accéss ( variable globale ) qui a été affecté lors de l'ouverture du salon
     stompClient.send("/app/salon/" + codeAcces, {}, JSON.stringify(question));
+	console.log("type de choix : ",typeof question.choixUnique)
 	stompClient.send("/app/gettype/" + codeAcces, {}, question.choixUnique);
 };
 
