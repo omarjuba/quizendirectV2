@@ -23,7 +23,7 @@ describe('test création salon + lancement question + fermeture salon',() =>{
 		cy.get('#login-password').type('Dupont45Martin78')
 		//obligé de cliquer deux fois à cause bug		
 		cy.get('#login-submit').click()
-		cy.get('#login-submit').click()
+
 
 		cy.get('.element-animation1').click()
 		cy.get('#connect').should('exist')
