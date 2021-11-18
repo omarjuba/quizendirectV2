@@ -437,9 +437,9 @@ function disconnect() {
 
 function sendQuestion(question) {
 	// ajout dans l'url le code d'accéss ( variable globale ) qui a été affecté lors de l'ouverture du salon
-    stompClient.send("/app/salon/" + codeAcces, {}, JSON.stringify(question));
+    stompClient.send("/quiz/salon/" + codeAcces, {}, JSON.stringify(question));
 	console.log("type de choix : ",typeof question.choixUnique)
-	stompClient.send("/app/gettype/" + codeAcces, {}, question.choixUnique);
+	//stompClient.send("/app/gettype/" + codeAcces, {}, question.choixUnique);
 };
 
 
