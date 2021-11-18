@@ -117,9 +117,9 @@ $(function () {
         var email_connexion = document.getElementById("login-email");
         var email_connexion_value = email_connexion.value;
         var mdp_email = document.getElementById("login-password");
-        sha256(mdp_email.value);
+        mdpCrypto = sha256(mdp_email.value);
         mail = email_connexion_value.toLowerCase();
-        console.log("mail :",mail);
+        
         mdpValue = mdp_email.value
         if (mdpCrypto != undefined) {
             doConnection();
@@ -198,10 +198,10 @@ function sha256(str) {
     var buffer = new TextEncoder("utf-8").encode(str);
     crypto.subtle.digest("SHA-256", buffer).then(function (hash) {
         mdpCrypto = hex(hash);
-    //    if(inDoConnect)
-    //    {
-    //     doConnection()  je ne comprend pas pourquoi on appelle cette méthode ici alors que l'on veut juste reformatter une string
-    //    }     
+       if(inDoConnect)
+    	 {
+       doConnection() ;
+       }     
     });
     return mdpCrypto
 

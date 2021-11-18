@@ -23,7 +23,7 @@ describe('test connexion, création repertoire + question',() =>{
 		cy.get('#login-password').type('Dupont45Martin78')
 		//obligé de cliquer deux fois à cause bug		
 		cy.get('#login-submit').click()
-		cy.get('#login-submit').click()
+		
 
 		cy.get('button.btn').should('exist')
 		cy.get('.element-animation1').should('exist')
@@ -54,7 +54,7 @@ describe('test connexion, création repertoire + question',() =>{
 		cy.get('#login-password').type('Dupont45Martin78')
 		//obligé de cliquer deux fois à cause bug		
 		cy.get('#login-submit').click()
-		cy.get('#login-submit').click()
+		
 
 
 		cy.get('.element-animation2').click()
@@ -82,7 +82,7 @@ describe('test connexion, création repertoire + question',() =>{
 		cy.get('#login-password').type('Dupont45Martin78')
 		//obligé de cliquer deux fois à cause bug		
 		cy.get('#login-submit').click()
-		cy.get('#login-submit').click()
+		
 
 
 		cy.get('.element-animation2').click()
@@ -107,7 +107,7 @@ describe('test connexion, création repertoire + question',() =>{
 		cy.get('#login-password').type('Dupont45Martin78')
 		//obligé de cliquer deux fois à cause bug		
 		cy.get('#login-submit').click()
-		cy.get('#login-submit').click()
+	
 
 
 		cy.get('.element-animation2').click()
@@ -141,7 +141,7 @@ describe('test connexion, création repertoire + question',() =>{
 		cy.get('#login-password').type('Dupont45Martin78')
 		//obligé de cliquer deux fois à cause bug		
 		cy.get('#login-submit').click()
-		cy.get('#login-submit').click()
+		
 
 
 		cy.get('.element-animation2').click()
@@ -175,7 +175,7 @@ describe('test connexion, création repertoire + question',() =>{
 		cy.get('#login-password').type('Dupont45Martin78')
 		//obligé de cliquer deux fois à cause bug		
 		cy.get('#login-submit').click()
-		cy.get('#login-submit').click()
+		
 
 
 		cy.get('.element-animation2').click()
@@ -211,7 +211,7 @@ describe('test connexion, création repertoire + question',() =>{
 		cy.get('#login-email').type('dupont.martin@univ-angers.fr')
 		cy.get('#login-password').type('Dupont45Martin78')
 		//obligé de cliquer deux fois à cause bug		
-		cy.get('#login-submit').click()
+		
 		cy.get('#login-submit').click()
 
 
@@ -237,6 +237,26 @@ describe('test connexion, création repertoire + question',() =>{
 	
        })
 
+	it('test double click pour se connecter', () => {
+   
+		cy.get('.modal-content').should('exist')
+    		cy.get('button.btn:nth-child(3)').click()
+		
+
+		cy.get('.col-md-6').should('exist')
+		cy.get('#login-email').type('dupont.martin@univ-angers.fr')
+		cy.get('#login-password').type('Dupont45Martin78')
+
+	
+		cy.get('#login-submit').click()
+
+
+		cy.get('.element-animation2').click()
+		cy.get('#list_POO').children().should('have.length', 4)
+	
+       })
+
+
 	it('test sauvegarde question', () => {
    
 		cy.get('.modal-content').should('exist')
@@ -247,7 +267,7 @@ describe('test connexion, création repertoire + question',() =>{
 		cy.get('#login-email').type('dupont.martin@univ-angers.fr')
 		cy.get('#login-password').type('Dupont45Martin78')
 		//obligé de cliquer deux fois à cause bug		
-		cy.get('#login-submit').click()
+		
 		cy.get('#login-submit').click()
 
 
@@ -266,8 +286,9 @@ describe('test connexion, création repertoire + question',() =>{
 		cy.get('.col-md-6').should('exist')
 		cy.get('#login-email').type('dupont.martin@univ-angers.fr')
 		cy.get('#login-password').type('Dupont45Martin78')
+		
 		//obligé de cliquer deux fois à cause bug		
-		cy.get('#login-submit').click()
+		
 		cy.get('#login-submit').click()
 
 
