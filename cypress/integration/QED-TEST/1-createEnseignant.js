@@ -91,7 +91,7 @@ describe('test création enseignant',() =>{
 		cy.get('#login-password').type('Dupont45Martin78')
 		//obligé de cliquer deux fois à cause bug		
 		cy.get('#login-submit').click()
-		cy.get('#login-submit').click()
+		
 
 		cy.get('button.btn').should('exist')
 		cy.get('button.btn').click()

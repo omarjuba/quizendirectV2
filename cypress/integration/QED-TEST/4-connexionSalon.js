@@ -37,8 +37,7 @@ describe('test connexion salon',() =>{
 		cy.on('window:alert', (str) => {
      			expect(str).to.equal('Aucun Salon n\'existe avec ce code ')
 		})
-
-		cy.clearCookies()
+		cy.wait(10000)
        })
 })
 

@@ -127,9 +127,9 @@ async function closeQuizz(message){
 			  .done(function( msg ) {
 			    console.log( "Mail Status: " + msg );
 			  });
-			await sleep(3500);
-			document.location.href = "/";
-		}	
+		}
+			await sleep(2500);
+			document.location.href = "/";	
 	}
 }
 
@@ -173,6 +173,7 @@ function getQuestion(question) {
 	/* Remplis les propositions des questions */
 	/* Les choix pour les questions unique et multiple*/
 	/* Un input type text pour les questions ouvertes*/
+
 	switch(question.choixUnique){
 		case 0 : {
 			console.log("Question Unique")
