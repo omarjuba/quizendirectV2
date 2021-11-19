@@ -1,10 +1,8 @@
 package fr.univ.angers.quizz.api.model;
 
-import lombok.Data;
 
 import javax.persistence.*;
 
-@Data
 @Entity
 @Table(name = "HISTORIQUE")
 public class Historique {

@@ -45,10 +45,10 @@
 			<version>1.5.0</version>
 		</dependency>
 
-		<dependency>
+		<!--dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
-		</dependency>
+		</dependency-->
 
 		<!-- spring dependences -->
 

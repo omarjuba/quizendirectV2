@@ -1,6 +1,5 @@
 package fr.univ.angers.quizz.api.model;
 
-import lombok.Data;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -12,7 +11,6 @@ import javax.persistence.*;
 
 import org.hibernate.validator.constraints.Length;
 
-@Data
 @Entity
 @Table(name = "QUESTION")
 public class Question implements Serializable {
