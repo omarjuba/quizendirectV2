@@ -30,7 +30,7 @@ services:
       - ./conf.d/nginx/proxy_params:/etc/nginx/proxy_params
 
     ports: 
-      - 81:80
+      - 80:80
     depends_on:
       - api
       - frontapp

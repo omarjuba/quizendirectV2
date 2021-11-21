@@ -3,7 +3,7 @@ COPY . /home/
 
 WORKDIR /home
 
-RUN mvn clean install spring-boot:repackage
+RUN mvn clean install spring-boot:repackage -Dmaven.test.skip=true
 
 
 FROM openjdk

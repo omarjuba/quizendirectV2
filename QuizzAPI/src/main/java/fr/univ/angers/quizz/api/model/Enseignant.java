@@ -7,9 +7,7 @@ import java.util.Set;
 
 import javax.persistence.*;
 
-import lombok.Data;
 
-@Data
 @Entity
 @Table(name = "ENSEIGNANT")
 public class Enseignant implements Serializable {
