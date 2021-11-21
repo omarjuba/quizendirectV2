@@ -1,0 +1,10 @@
+{
+  "simulation": "TestAffichage",
+  "simulationId": "testaffichage",
+  "start": 1637278580199,
+  "description": "",
+  "scenarios": ["ProfLance", "EtuAffiche"],
+  "assertions": [
+
+  ]
+}

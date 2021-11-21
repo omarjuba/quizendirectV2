@@ -1,0 +1,19 @@
+Explication les résultats:
+
+Le 1er bloc :
+    - Nombre total des requetes 
+
+Le 2eme bloc :
+    - nombre des utilisateurs actives en meme temps 
+
+Le 3eme bloc :
+    - Le temps réponses moyen pour les requetes
+
+Le 4eme bloc :
+    - Le temps réponses au cours du test 
+
+Le 5eme bloc :
+    -  Le nombre des requetes par second
+
+Le 6eme bloc :
+    - Le nombre des réponses par second

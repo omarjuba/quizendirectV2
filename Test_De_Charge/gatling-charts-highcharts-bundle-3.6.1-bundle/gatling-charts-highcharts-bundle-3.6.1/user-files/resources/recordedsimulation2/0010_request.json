@@ -1,0 +1,1 @@
+{"query":"{   getEnseignantById(token : \"eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiIxIiwiaWF0IjoxNjM1NzkwNjI0LCJzdWIiOiJub20iLCJpc3MiOiJhcGkiLCJleHAiOjE2MzU3OTQyMjR9.inYUpC6vA0T11AHzI6zYCOiwMGTTQANCUt2dqLeRRcA\",  id_ens : \"1\" ){... on Enseignant{       id_ens       repertoires{           nom           questions{               intitule               time           }       }   }}}"}

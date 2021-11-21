@@ -1,0 +1,1 @@
+{"query":"mutation{\n  createRepertoire(token : \"eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiIxIiwiaWF0IjoxNjM1NzkwNjI0LCJzdWIiOiJub20iLCJpc3MiOiJhcGkiLCJleHAiOjE2MzU3OTQyMjR9.inYUpC6vA0T11AHzI6zYCOiwMGTTQANCUt2dqLeRRcA\", nom: \"T\",enseignant:{mail:\"test@univ-angers.fr\"}){\n  ...on Repertoire\n    {\n      nom:nom \n    } ... on Error{ message }\n  }\n}"}

@@ -1,0 +1,1 @@
+{"query":"mutation{    restartQuestionById(id_quest:1, token : \"eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiIxIiwiaWF0IjoxNjM3Mjc2MjQ0LCJzdWIiOiJub20iLCJpc3MiOiJhcGkiLCJleHAiOjE2MzcyNzk4NDR9.lMHa81kSylcSuXk4gRl8V-rV-JGynOc64tjv3DrKIhw\")  {     ...on Question{id_quest intitule choixUnique reponsesBonnes reponsesFausses time nbReponse}\n\t ...on Error{message}\n  }}"}
