@@ -11,6 +11,7 @@
 ## 1) configurations de fichier docker-compose.yml
  
   en ajoutant les trois envirenement:
+  
       frontapp
       api
       Bd: postgres 
