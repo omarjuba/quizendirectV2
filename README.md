@@ -11,9 +11,9 @@
 ## 1) configurations de fichier docker-compose.yml
  
   en ajoutant les trois envirenement:
-      - frontapp
-      -api
-      -Bd: postgres 
+      frontapp
+      api
+      Bd: postgres 
 
 ## 2) modifier le  fichier config.inginx 
 
