@@ -81,7 +81,6 @@ $(function () {
                                 "   }" +
                                 "  }" +
                                 "}";
-                            console.log(mutation);
                             const donnees = callAPI(mutation);
                             donnees.then((objectcreatEns) => {
                                 document.cookie = "userName= " + objectcreatEns.data.createEnseignant.nom
@@ -190,7 +189,6 @@ function doConnection() {
             }
             if (enseignantExist == false) {
                 alert("Cet enseignant n'existe pas");
-				
             }
 
 

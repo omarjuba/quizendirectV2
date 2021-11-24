@@ -44,6 +44,8 @@
 ## 0.2) après la connection sur la VM DE Leria il nécessite les installations suivantes : 
 
 	apt upgrade 
+	apt update
+	
 	
 	curl :
 		apt-get install curl
