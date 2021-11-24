@@ -44,7 +44,7 @@ public class Question implements Serializable {
         this.reponsesBonnes = reponsesBonnes;
         this.reponsesFausses = reponsesFausses;
         this.time = time;
-        List<Integer> intergerLists = new ArrayList();
+        //List<Integer> intergerLists = new ArrayList();
     }
 
     public int getId_quest() {
@@ -134,6 +134,7 @@ public class Question implements Serializable {
 
     public List<Integer> getNbReponse() {
         return nbReponse;
+        
     }
 
     public void setNbReponse(List<Integer> nbreponse) {
