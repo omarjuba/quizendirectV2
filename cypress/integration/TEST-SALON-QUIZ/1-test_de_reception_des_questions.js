@@ -19,7 +19,8 @@ describe('test reception des questions sur le salon de quiz',() =>{
 		cy.get('button.btn:nth-child(1)').click()
 		cy.get('.btn').should('exist')
 
-		cy.get('#idSalon').type('9646')
+		cy.get('#idSalon').type('6317')
+		cy.get('#studentmail').type('aristoteondongi10@gmail.com')
 		cy.get('input.form-control:nth-child(4)').type('etudiant')
 
 		cy.get('.btn').click()
