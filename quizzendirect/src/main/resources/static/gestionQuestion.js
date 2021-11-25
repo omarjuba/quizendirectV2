@@ -1,4 +1,4 @@
-  $(document).on('change', '#TypeChoix', function() {
+$(document).on('change', '#TypeChoix', function() {
 	//questionChoix
 	//questionOuverte
 	//si la valeur = ouverte => afficher questionouverte et cacher questionChoix sinon contraire
@@ -37,16 +37,20 @@ $(document).on('click', '#btn-moin-reponse', function() {
 
 function addReponseElement(number) {
     let div = document.createElement('div');
-    div.classList.add('form-inline');
+    //div.classList.add('form-inline');
     div.classList.add('mb-2');
+    let divRep = document.createElement('div');
+    divRep.classList.add('form-group');
     let label = document.createElement('label');
     label.innerText = 'reponse ' + (number) + ' : ';
     let input = document.createElement('input');
     input.classList.add('reponsesOuverte');
     input.setAttribute('type', 'text');
+    input.classList.add('form-control')
     input.setAttribute('placeholder', 'reponse');
-    div.appendChild(label);
-    div.appendChild(input);
+    divRep.appendChild(label);
+    divRep.appendChild(input);
+    div.appendChild(divRep);
     document.querySelector('#reponses-container').appendChild(div);
 }
 
@@ -85,7 +89,7 @@ function getCookie(name){
     return null;
 }
 
-/*******************Fonction pour l'API ********************************/
+/******Fonction pour l'API ***********/
 $(document).ready(function () {
     let userId_ens = getCookie("userId_ens")
     let token = getCookie("token")
@@ -252,7 +256,7 @@ function questionExiste(question)  {
 
 }
 
-/***********************Fonction *******************************/
+/********Fonction ************/
 //Ajout des questions à un repertoire
 //charge les question d'un repertoire existant
 function ajouteQuestion(nomRepertoire,enonce) {
@@ -387,7 +391,7 @@ function manageDoubleQuote(stringToManage) {
 	
 }
 
-/***********************Gestion evénements clique sur la page *******************************/
+/********Gestion evénements clique sur la page ************/
 $(document).on('click','#AjoutQuestion',function () {
 
     let enonce = document.getElementById("editeurQuill-enonce").firstChild.innerHTML.replace("\n",'');
@@ -798,4 +802,3 @@ $(document).on('click','.btn.btn-danger', function (){
     });
     parent.remove();
 } )
-
