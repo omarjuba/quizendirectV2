@@ -81,7 +81,6 @@ $(function () {
                                 "   }" +
                                 "  }" +
                                 "}";
-                            console.log(mutation);
                             const donnees = callAPI(mutation);
                             donnees.then((objectcreatEns) => {
                                 document.cookie = "userName= " + objectcreatEns.data.createEnseignant.nom
@@ -155,7 +154,8 @@ function doConnection() {
             // si on trouve que le mail existe
 			// soit en min soit en maj
 			if(object0.data.EnseignantVerification != null) {
-				if (object0.data.EnseignantVerification.mail.toLowerCase() == mail.toLowerCase()) {
+				if (object0.data.EnseignantVerification.mail!=null &&
+					object0.data.EnseignantVerification.mail.toLowerCase() == mail.toLowerCase()) {
                 enseignantExist = true;
                 if (object0.data.EnseignantVerification.motdepasse == mdpCrypto) {
                     mdpTrue = true;
@@ -177,6 +177,9 @@ function doConnection() {
                     })
                 }
             }
+			else{
+				alert("La connexion à échoué verifiez vos identifiants ");
+			}
 			}
             
 
@@ -186,7 +189,6 @@ function doConnection() {
             }
             if (enseignantExist == false) {
                 alert("Cet enseignant n'existe pas");
-				console.log("Cet enseignant n'existe pas");
             }
 
 

@@ -82,7 +82,6 @@ $(document).on("click", ".button-ajouter", function () {
         let lastSelectedQuestion = $(document).find(".selected-question").last()
         lastSelectedQuestion.find(".button-down").toggleClass("disabled")
     }
-    console.log(intituleQuestion);
     let stringQuestion =
         "   <li class=\"selected-question panel panel-primary\">" +
         "       <div class=\"time-line\"></div>" +
@@ -261,7 +260,6 @@ $(document).on("click", ".button-lancer", function () {
 	let question={};
     const donnees = callAPI(query);
     donnees.then(object => {
-		console.log("QUESTION RESTART REPONSE : ",object);	
          question = {
             'id_quest': object.data.restartQuestionById.id_quest,
             'intitule': object.data.restartQuestionById.intitule,
@@ -271,7 +269,6 @@ $(document).on("click", ".button-lancer", function () {
             'time': time, 
         };
         sendQuestion(question);
-		console.log("la question", question);
     });
 })
 
@@ -293,7 +290,6 @@ $(document).on("click", ".button-stat", function () {
         "}";
     const donnees = callAPI(query);
     donnees.then(object => {
-	console.log("GetQuestion : ",object);
         var question = {
             'id_quest': object.data.getQuestionById.id_quest,
             'intitule': object.data.getQuestionById.intitule,
@@ -438,7 +434,6 @@ function disconnect() {
 function sendQuestion(question) {
 	// ajout dans l'url le code d'accéss ( variable globale ) qui a été affecté lors de l'ouverture du salon
     stompClient.send("/quiz/salon/" + codeAcces, {}, JSON.stringify(question));
-	console.log("type de choix : ",typeof question.choixUnique)
 	//stompClient.send("/app/gettype/" + codeAcces, {}, question.choixUnique);
 };
 

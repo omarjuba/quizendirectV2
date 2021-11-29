@@ -11,6 +11,7 @@ import graphql.schema.DataFetcher;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import org.apache.commons.lang3.StringUtils;
+import org.hibernate.internal.build.AllowSysOut;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -32,6 +33,8 @@ public class QuestionDataFetcher {
     private RepertoireRepository repertoireRepository;
     int idEns;
 
+    private final Object lock = new Object();
+    
     public DataFetcher<List<Question>> getAllQuestion() {
         return dataFetchingEnvironment -> questionRepository.findAll();
     }
@@ -143,7 +146,7 @@ public class QuestionDataFetcher {
         };
     }
 
-    public DataFetcher<Object> updateReponse() {
+    public DataFetcher<Object> updateReponse()  {
         return dataFetchingEnvironment -> {
             Optional<Question> question = questionRepository.findById(Integer.parseInt(dataFetchingEnvironment.getArgument("id_quest")));
             if (!question.isPresent())
@@ -153,15 +156,16 @@ public class QuestionDataFetcher {
             String reponse = dataFetchingEnvironment.getArgument("reponse");
 
             //creer tableautmp
-            List<Integer> nbReponsetmp =  question.get().getNbReponse();
-
-            int index = question.get().getReponses().indexOf(reponse);
-            nbReponsetmp.set(index , question.get().getNbReponse().get(index)+1);
-
-            question.get().setNbReponse(nbReponsetmp);
-            questionRepository.save(question.get());
-            Optional<Question> newQ = questionRepository.findById(Integer.parseInt(dataFetchingEnvironment.getArgument("id_quest")));
-            return question.get();
+            synchronized (lock) {
+            	 List<Integer> nbReponsetmp =  question.get().getNbReponse();
+                 int index = question.get().getReponses().indexOf(reponse);
+                 nbReponsetmp.set(index , (question.get().getNbReponse().get(index))+1);
+                 question.get().setNbReponse(nbReponsetmp);
+                 questionRepository.save(question.get());
+                 Optional<Question> newQ = questionRepository.findById(Integer.parseInt(dataFetchingEnvironment.getArgument("id_quest")));
+                 return question.get();
+            }
+           
         };
     }
 

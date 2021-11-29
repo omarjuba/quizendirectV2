@@ -1,4 +1,4 @@
-  $(document).on('change', '#TypeChoix', function() {
+$(document).on('change', '#TypeChoix', function() {
 	//questionChoix
 	//questionOuverte
 	//si la valeur = ouverte => afficher questionouverte et cacher questionChoix sinon contraire
@@ -37,16 +37,20 @@ $(document).on('click', '#btn-moin-reponse', function() {
 
 function addReponseElement(number) {
     let div = document.createElement('div');
-    div.classList.add('form-inline');
+    //div.classList.add('form-inline');
     div.classList.add('mb-2');
+    let divRep = document.createElement('div');
+    divRep.classList.add('form-group');
     let label = document.createElement('label');
     label.innerText = 'reponse ' + (number) + ' : ';
     let input = document.createElement('input');
     input.classList.add('reponsesOuverte');
     input.setAttribute('type', 'text');
+    input.classList.add('form-control')
     input.setAttribute('placeholder', 'reponse');
-    div.appendChild(label);
-    div.appendChild(input);
+    divRep.appendChild(label);
+    divRep.appendChild(input);
+    div.appendChild(divRep);
     document.querySelector('#reponses-container').appendChild(div);
 }
 
@@ -85,7 +89,7 @@ function getCookie(name){
     return null;
 }
 
-/*******************Fonction pour l'API ********************************/
+/******Fonction pour l'API ***********/
 $(document).ready(function () {
     let userId_ens = getCookie("userId_ens")
     let token = getCookie("token")
@@ -106,13 +110,11 @@ $(document).ready(function () {
         "}"
     const donnees = callAPI(query)
     donnees.then((object) => {
-		console.log(object);
         afficherRepertoires(object.data.getEnseignantById, userId_ens)
     });
 })
 
 function afficherRepertoires(data, userId_ens){
-	console.log(data);
     if(data.id_ens == userId_ens){
         for(let j = 0; j < data.repertoires.length; j++){
             ajouterRepertoire(data.repertoires[j].nom);
@@ -194,11 +196,9 @@ function enregistrementQuestion(enonce,choix,reponseBonnes,reponseFausses,time, 
         "}" +
         "}\n" +
         "}"
-	console.log("Create Question :\n",enregistrementQuestion);
     callAPI(enregistrementQuestion).
 	then(reponse => {
 						
-						console.log("ajoute la question dans le repertoire, reponse :",reponse);
 						if(typeof reponse ==="undefined"){
 							alert("Erreur la question n'a pas été créée");
 						}
@@ -256,7 +256,7 @@ function questionExiste(question)  {
 
 }
 
-/***********************Fonction *******************************/
+/********Fonction ************/
 //Ajout des questions à un repertoire
 //charge les question d'un repertoire existant
 function ajouteQuestion(nomRepertoire,enonce) {
@@ -268,7 +268,6 @@ function ajouteQuestion(nomRepertoire,enonce) {
         '}'
     const donnee = callAPI(query);
     donnee.then(object => {
-	console.log("ajout de la question au répertoire dans le front, réponse : ",object);
 	if(typeof object.data!=="undefined"){
         let question = object.data.getQuestionByIntitule
         let button = "<div class=\"btn-repertoire\"  style='margin-top: 2px;'><button id='ModifierQuestion_"+question.id_quest+"_"+nomRepertoire+"' type=\"button\" class=\"btn btn-lg btn-info btn-block\" data-toggle='modal' data-target='#modalPoll-1' style=\"width: 79%\">" + enonce + "</button> \ " +
@@ -392,7 +391,7 @@ function manageDoubleQuote(stringToManage) {
 	
 }
 
-/***********************Gestion evénements clique sur la page *******************************/
+/********Gestion evénements clique sur la page ************/
 $(document).on('click','#AjoutQuestion',function () {
 
     let enonce = document.getElementById("editeurQuill-enonce").firstChild.innerHTML.replace("\n",'');
@@ -425,8 +424,7 @@ $(document).on('click','#AjoutQuestion',function () {
 	                reponsesFausse.push("\"" + manageDoubleQuote(input_into_the_label) + "\"");
 	            }
 	        });
-			console.log(reponsesFausse.length);
-			console.log(reponsesBonnes.length);
+
 		}
 		
 		//Fonction qui remplie le tableau de reponsesBonnes et Fausse pour la question ouverte
@@ -463,7 +461,6 @@ $(document).on('click','#AjoutQuestion',function () {
         const donnee = callAPI(query);
 
         donnee.then((object) => {
-			console.log("Ajout de la Question prmière func");
             ajouteQuestion(nomRepertoire, enonce);
             let id_rep = getIdRepertory(object.data.getEnseignantById, userId_ens, nomRepertoire);
             let questions = getQuestionByrepertoire(object.data.getEnseignantById, userId_ens, nomRepertoire);
@@ -541,13 +538,11 @@ $(document).on('click','#ModifierQuestion',function () {
             "\t}\n" +
             "}"
 
-		console.log("modification : \n",updateQuery)
         callAPI(updateQuery).
 		
 		/*les objets renvoyés par la BDD peuvent être différents , il faut tester donc toutes les 
 		constructions potentielles pour detecter un renvoi d'erreur'*/
 		then(reponse => {
-						console.log(reponse);
 						if( typeof reponse.data!=="undefined" && !reponse.data.updateQuestion)
 						{
 							alert("erreur la question n'a pas été modifée\n"+reponse.data.updateQuestion.message);
@@ -555,7 +550,6 @@ $(document).on('click','#ModifierQuestion',function () {
 						}
 						else if(typeof reponse.errors!=="undefined")
 						{
-							console.log(reponse.errors[0].message);
 							alert("erreur la question n'a pas été modifiée\n"+reponse.errors[0].message);
 						}
 						else if (typeof reponse.data.updateQuestion.message!=="undefined"){
@@ -657,7 +651,6 @@ $(document).on('click','.row button',function () {
            document.getElementById('editeurQuill-enonce').firstElementChild.innerHTML=question.intitule;
 
 
-		console.log("le choix de la question est : ",question.choixUnique);
 		
 		//charge la partie "questionChoix" de la modal en fonction du type de question 
 		switch (question.choixUnique)
@@ -668,7 +661,6 @@ $(document).on('click','.row button',function () {
 				
 				$('#TypeChoix').val('multiple');
 				let numberOfGoodAnswers = question.reponsesBonnes.length;
-				console.log("charge la modification  pour choix multiple")
             	for (let j=1; j<=numberOfGoodAnswers; j++) {
             	    $('#Choix'+j).val(question.reponsesBonnes[j-1]);
 					$('#Choix'+j).css('background-color','green')
@@ -810,4 +802,3 @@ $(document).on('click','.btn.btn-danger', function (){
     });
     parent.remove();
 } )
-

@@ -14,7 +14,6 @@ var ReponseDansTableau = false;
 
 
 (function connect() {
-	console.log("connect begin")
     let environement = window.location.hostname
     if (environement == "localhost"){
         environement = "://" + environement + ":20020";
@@ -29,8 +28,8 @@ var ReponseDansTableau = false;
 	
 	  // ajout du code d'accés selon la variable en get dans l'url
         stompClient.subscribe('/quiz/salon/' + getQueryVariable("codeAcces"), function (question) {
-		getQuestion(JSON.parse(question.body));
-       		 });
+			getQuestion(JSON.parse(question.body));
+       	});
 
 		//useless Subscribe
 		/*
@@ -43,7 +42,7 @@ var ReponseDansTableau = false;
 
 		stompClient.subscribe('/quiz/salon/closed/' + getQueryVariable("codeAcces"), function (text) {
             	closeQuizz(text.body);
-				console.log("sec sub => OK")
+				
 		});
     });
 })();
@@ -61,6 +60,7 @@ async function closeQuizz(message){
 			let MailBody ="";
 				MailBody = MailBody + "<fieldset><legend>Récapitulatif de votre Quiz</legend>";
 			let num = 1;
+			
 			for(var i = 0; i < allQuestion.length;){
 				let votrereponse ="";
 				let enonce=""; 
@@ -94,12 +94,10 @@ async function closeQuizz(message){
 	    		propositions.sort(() => Math.random() - 0.5);
 				
 				MailBody = MailBody + "<li>Réponse correcte :";
-				for(var j = 0; j<propositions.length;++j){
-					if(reponseIsGood(laquestion.reponsesBonnes,propositions[j])) {
-						
-						if(j == propositions.length) MailBody = 	MailBody +propositions[j];
-						else MailBody = MailBody +propositions[j]+", ";
-					}
+				
+				for(var j = 0; j<laquestion.reponsesBonnes.length;++j){
+						 MailBody = MailBody +laquestion.reponsesBonnes[j]+" ";
+		
 				}
 				MailBody = 	MailBody + "</li></ul>";
 				++num;
@@ -114,7 +112,7 @@ async function closeQuizz(message){
 			  data: JSON.stringify(getCookie("studentmail"))
 			})
 			  .done(function( msg ) {
-			    console.log( "Mail Status: " + msg );
+			    
 			  });
 	
 			// envoi du contenu du mail au controlleur				 
@@ -125,7 +123,7 @@ async function closeQuizz(message){
 			  data: JSON.stringify(MailBody)
 			})
 			  .done(function( msg ) {
-			    console.log( "Mail Status: " + msg );
+			    
 			  });
 		}
 			await sleep(2500);
@@ -139,7 +137,7 @@ var numero_question = 1;
 
 function getQuestion(question) {
 	
-	console.log("Get Question question récupérée : ",question);
+
     laquestion = question;
     /* Cache le chargement et affiche la question */
     $('#loadbar').hide();
@@ -147,7 +145,6 @@ function getQuestion(question) {
 
     /* Remplis les informations des questions */
 	$("#qid").html(numero_question);
-    console.log(question.intitule);
        //creation du conteur QUill JS en lecture seulement
        let quillLectire = new Quill('#enonce', {
         theme: 'bubble',
@@ -167,16 +164,14 @@ function getQuestion(question) {
     propositions.sort(() => Math.random() - 0.5);
 
 	
-	console.log("GetQuestion - type : , value : ",question.choixUnique)
-	console.log("prop",propositions)
-	console.log("prop",propositions)
+	
 	/* Remplis les propositions des questions */
 	/* Les choix pour les questions unique et multiple*/
 	/* Un input type text pour les questions ouvertes*/
 
 	switch(question.choixUnique){
 		case 0 : {
-			console.log("Question Unique")
+			
 			//traitement question unique
 				
 			$("#quizLibre").css("display","none");
@@ -188,7 +183,6 @@ function getQuestion(question) {
 			LesReponses = [];
 			let divUniq=document.getElementById("quizUnique");
 			for (let i = 0; i < propositions.length; i++) {
-				console.log("prop"+i,propositions[i]);
 				if (propositions[i] != "") {
 					divUniq.querySelector(".proposition"+(i+1)).innerHTML=propositions[i];
 					//$("#proposition" + (i + 1) + "").html(propositions[i]);
@@ -198,7 +192,7 @@ function getQuestion(question) {
 		}
 		
 		case 1 : {
-			console.log("Question multiple")
+			
 			//traitement question multiple
 			$("#quizLibre").css("display","none");
 			$("#quizMultiple").css("display","inline");
@@ -210,7 +204,7 @@ function getQuestion(question) {
 		
 	    	let divMult=document.getElementById("quizMultiple");
 			for (let i = 0; i < propositions.length; i++) {
-				console.log("prop"+i,propositions[i]);
+				
 				if (propositions[i] != "") {
 					divMult.querySelector(".proposition"+(i+1)).innerHTML=propositions[i];
 					//$("#proposition" + (i + 1) + "").html(propositions[i]);
@@ -219,7 +213,7 @@ function getQuestion(question) {
 			break;	
 		}
 		case 2 : {
-			console.log("Question Unique")
+			
 			//traitement question ouvrete
 			$("#quizLibre").css("display","inline");
 			$("#quizMultiple").css("display","none");
@@ -324,19 +318,16 @@ $(function () {
 
 				boolQuery=false
 				var checkVal = $(this).attr("checked");
-				console.log(checkVal);
 				if (checkVal == undefined) {
 					$(this).attr("checked", true);
 					$(this).css('background-color','#1BADCD');
 					var reponseValue = $(this).children(4)[2].innerHTML
 					ajouterReponse(reponseValue);
-					console.log(LesReponses);
 				} else if (checkVal == "checked") {
 					$(this).attr("checked", false);
 					$(this).attr('style','');
 					var reponseValue = $(this).children(4)[2].innerHTML
 					supprimerReponse(reponseValue);
-					console.log(LesReponses);
 				}
 
 			}
@@ -392,7 +383,6 @@ $(function () {
     // });
 	
     $('#btnReponseLibre').click(function () {
-		console.log("Libre clicked")
         var reponseValue = $('.reponse').val();
         sendReponse(reponseValue);
         $('#loadbar').show();
@@ -401,9 +391,7 @@ $(function () {
 
 
 	$('#btnValiderMultiple').click(function () {
-		console.log("Reponses à la question : ",LesReponses);
 		for (let reponseValue of LesReponses) {
-			console.log("réponse ",reponseValue," envoyée");
 			sendReponse(reponseValue);
 		}
 			$('#loadbar').show();
@@ -416,7 +404,6 @@ $(function () {
 
 function sendReponse(reponseVal) {
     if (laquestion != null) {
-		console.log("réponse envoyée : ",reponseVal);
         //TODO ajouter IF() ELSE
         let query = "mutation{\n" +
             "  updateReponse(reponse : \"" + reponseVal.replaceAll("\\", "\\\\") + "\" , id_quest: " + laquestion.id_quest + " ){\n" +
@@ -428,12 +415,11 @@ function sendReponse(reponseVal) {
             "  }\n" +
             "}";
 
-		console.log("SEND REPONSE :",query);
         const donnee = callAPI(query)
 						.then(response => console.log(response)); 
 		
 		
-		var alldata = {"question" : laquestion.intitule,"choix" : laquestion.choixUnique ,"bonneReponse" : laquestion.reponsesBonnes,"bonneFausse" : laquestion.reponsesFausses  ,"studentAnswer" : reponseVal};
+		var alldata = {"question" : laquestion.intitule,"choix" : laquestion.choixUnique ,"bonneReponse" : laquestion.reponsesBonnes,"mauvaiseReponse" : laquestion.reponsesFausses  ,"studentAnswer" : reponseVal};
 		allQuestion.push(alldata);
     }
 }
