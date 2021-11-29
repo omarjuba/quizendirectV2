@@ -377,7 +377,7 @@ function isGoodForm(){
         //verife que toutes les questions ouvertes sont remplies
         Array.from(document.getElementById("reponses-container").querySelectorAll("[type=text]")).forEach((rep)=>{if(rep.value=="")isgood=false;})
 		
-		if(Array.from(document.getElementById("reponses-container").childNodes).length < 2)
+		if(Array.from(document.getElementById("reponses-container").childNodes).length < 1)
 			{
 				isgood=false;
 			}
@@ -411,7 +411,7 @@ $(document).on('click','#AjoutQuestion',function () {
         alert("Question existe déjà dans un répertoire ");
     }
     else if(!isGoodForm()){
-        alert("Formulaire mal rempli ! \nAssurez vous d'avoir remplit tous les champs, et d'avoir au moins 2 réponses pour une question ouverte");
+        alert("Formulaire mal rempli ! \nAssurez vous d'avoir remplit tous les champs, et d'avoir au moins 1 réponses pour une question ouverte");
     } else {
         //Fonction qui remplie le tableau de reponsesBonnes et Fausse en fonction des réponses sélectionnées
 		if ( (choix == 0) || (choix == 1)) {

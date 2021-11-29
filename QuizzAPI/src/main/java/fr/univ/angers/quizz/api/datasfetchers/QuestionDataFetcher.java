@@ -59,13 +59,22 @@ public class QuestionDataFetcher {
             if (parseJWT(dataFetchingEnvironment.getArgument("token"))) {
                 if (StringUtils.normalizeSpace(dataFetchingEnvironment.getArgument("intitule")).length() <= 0)
                     return new Error("createQuestion", "INVALID_ARG", "Erreur : L'intitulé de la question que vous avez saisi : '" + dataFetchingEnvironment.getArgument("intitule") + "' n'est pas correct.");
-                if (((List<String>) dataFetchingEnvironment.getArgument("reponsesBonnes")).isEmpty())
-                    return new Error("createQuestion", "INVALID_ARG", "Erreur : Vous devez saisir au minimum 1 bonne réponse.");
-                if ((((List<String>) dataFetchingEnvironment.getArgument("reponsesBonnes")).size() + ((List<String>) dataFetchingEnvironment.getArgument("reponsesFausses")).size()) < 2)
-                    return new Error("createQuestion", "INVALID_ARG", "Erreur : Vous devez saisir au minimum 2 réponses possibles.");
-                if ((((List<String>) dataFetchingEnvironment.getArgument("reponsesBonnes")).size() + ((List<String>) dataFetchingEnvironment.getArgument("reponsesFausses")).size()) > 4)
-                    return new Error("createQuestion", "INVALID_ARG", "Erreur : Vous devez saisir au maximum 4 réponses possibles.");
-
+                
+                if ( (int) dataFetchingEnvironment.getArgument("choixUnique") == 0  || (int) dataFetchingEnvironment.getArgument("choixUnique") == 1 ) {
+          
+	                if (((List<String>) dataFetchingEnvironment.getArgument("reponsesBonnes")).isEmpty())
+	                    return new Error("createQuestion", "INVALID_ARG", "Erreur : Vous devez saisir au minimum 1 bonne réponse.");
+	                if ((((List<String>) dataFetchingEnvironment.getArgument("reponsesBonnes")).size() + ((List<String>) dataFetchingEnvironment.getArgument("reponsesFausses")).size()) < 2)
+	                    return new Error("createQuestion", "INVALID_ARG", "Erreur : Vous devez saisir au minimum 2 réponses possibles.");
+	                if ((((List<String>) dataFetchingEnvironment.getArgument("reponsesBonnes")).size() + ((List<String>) dataFetchingEnvironment.getArgument("reponsesFausses")).size()) > 4)
+	                    return new Error("createQuestion", "INVALID_ARG", "Erreur : Vous devez saisir au maximum 4 réponses possibles.");
+                }
+                
+                else if ((int) dataFetchingEnvironment.getArgument("choixUnique") == 2) {
+                	if (((List<String>) dataFetchingEnvironment.getArgument("reponsesBonnes")).isEmpty())
+	                    return new Error("createQuestion", "INVALID_ARG", "Erreur : Vous devez saisir au minimum 1 bonne réponse.");
+                }
+                
                 List<String> reponses = new ArrayList<>();
                 reponses.addAll(dataFetchingEnvironment.getArgument("reponsesBonnes"));
                 reponses.addAll(dataFetchingEnvironment.getArgument("reponsesFausses"));
