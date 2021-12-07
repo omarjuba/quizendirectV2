@@ -287,10 +287,10 @@ class Users extends Simulation {
 
 	setUp( 
 		( scn1.inject(
-			atOnceUsers(5), 
-			constantUsersPerSec(10).during(15.seconds).randomized )).protocols(httpProtocol),
+			atOnceUsers(1), 
+			constantUsersPerSec(1).during(1.seconds).randomized )).protocols(httpProtocol),
 		( scn2.inject(
-			atOnceUsers(20),
+			atOnceUsers(30),
 			constantUsersPerSec(20).during(20.seconds).randomized )).protocols(httpProtocol)
 	)
 
