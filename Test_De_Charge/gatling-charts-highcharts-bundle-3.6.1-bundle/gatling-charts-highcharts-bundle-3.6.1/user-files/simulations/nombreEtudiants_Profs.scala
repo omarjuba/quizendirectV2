@@ -1,4 +1,4 @@
-
+//Test de charge : Nombre de prof + étudiant se connectent (local) 
 import scala.concurrent.duration._
 
 import io.gatling.core.Predef._
