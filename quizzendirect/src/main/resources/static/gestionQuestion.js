@@ -440,9 +440,7 @@ $(document).on('click','#AjoutQuestion',async function () {
 
 		// faire en sorte que cette fonction renvoie false s'il y a erreur, pour pas faire la suite
 		let isRegistred = await enregistrementQuestion(enonce, choix, reponsesBonnes, reponsesFausse, 10, nomRepertoire);
-		
-		console.log("isRegistred",isRegistred)
-		
+				
 		if(isRegistred) {
 			let token = getCookie("token");
 	        let userId_ens = getCookie("userId_ens")
