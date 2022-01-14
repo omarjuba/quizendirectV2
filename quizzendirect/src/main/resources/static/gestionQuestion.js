@@ -185,38 +185,40 @@ function getQuestionByrepertoire(data,userId_ens,nomrepository) {
 }
 
 //Creation de la question dans la BDD
-function enregistrementQuestion(enonce,choix,reponseBonnes,reponseFausses,time, nomRepertoire) {
-	
-    let token = getCookie("token")
-    let enregistrementQuestion = "mutation{\n" +
-        "  createQuestion(token : \""+ token +"\" , nomRepertoire: \""+ nomRepertoire+"\" intitule:\"" + manageDoubleQuote(enonce) + "\",choixUnique:"+choix+",reponsesBonnes:["+reponseBonnes+"],reponsesFausses:["+reponseFausses+"],time:"+time+"){\n" +
-        "    __typename\n" +
-        "  ...on Error{" +
-        "message " +
-        "}" +
-        "}\n" +
-        "}"
-    callAPI(enregistrementQuestion).
-	then(reponse => {
-						
-						if(typeof reponse ==="undefined"){
-							alert("Erreur la question n'a pas été créée");
-						}
-						if( typeof reponse.data==="undefined")
-						{
-							alert("erreur la question n'a pas été créée\n"+reponse.errors[0].message)
-							
-						}
-						else if(!reponse.data.createQuestion){
-							
-							alert("erreur la question n'a pas été créée \n"+reponse.errors[0].message);
-						}
-						else if (reponse.data.createQuestion.__typename=="Error"){
-							alert("erreur la question n'a pas été créée\n"+reponse.data.createQuestion.message);
-						}
-						
-						
-						} );
+async function enregistrementQuestion(enonce,choix,reponseBonnes,reponseFausses,time, nomRepertoire) {
+	return new Promise(resolve=>{
+	    let token = getCookie("token")
+	    let enregistrementQuestion = "mutation{\n" +
+	        "  createQuestion(token : \""+ token +"\" , nomRepertoire: \""+ nomRepertoire+"\" intitule:\"" + manageDoubleQuote(enonce) + "\",choixUnique:"+choix+",reponsesBonnes:["+reponseBonnes+"],reponsesFausses:["+reponseFausses+"],time:"+time+"){\n" +
+	        "    __typename\n" +
+	        "  ...on Error{" +
+	        "message " +
+	        "}" +
+	        "}\n" +
+	        "}"
+	    callAPI(enregistrementQuestion).
+		then(reponse => {
+			let isRegistred = true;
+			if(typeof reponse ==="undefined"){
+				alert("Erreur la question n'a pas été créée");
+				isRegistred = false;
+			}
+			if( typeof reponse.data==="undefined")
+			{
+				alert("erreur la question n'a pas été créée\n"+reponse.errors[0].message);
+				isRegistred = false;
+			}
+			else if(!reponse.data.createQuestion){
+				alert("erreur la question n'a pas été créée \n"+reponse.errors[0].message);
+				isRegistred = false;
+			}
+			else if (reponse.data.createQuestion.__typename=="Error"){
+				alert("erreur la question n'a pas été créée\n"+reponse.data.createQuestion.message);
+				isRegistred = false;
+			}
+			resolve(isRegistred);
+		});
+	})
 }
 
 function getIdQuestion(data,intitule) {
@@ -392,7 +394,7 @@ function manageDoubleQuote(stringToManage) {
 }
 
 /********Gestion evénements clique sur la page ************/
-$(document).on('click','#AjoutQuestion',function () {
+$(document).on('click','#AjoutQuestion',async function () {
 
     let enonce = document.getElementById("editeurQuill-enonce").firstChild.innerHTML.replace("\n",'');
     let choix = 0;
@@ -436,37 +438,42 @@ $(document).on('click','#AjoutQuestion',function () {
 		});
 		}
 
-		enregistrementQuestion(enonce, choix, reponsesBonnes, reponsesFausse, 10, nomRepertoire);
-
-        let token = getCookie("token");
-        let userId_ens = getCookie("userId_ens")
-        let query = "{" +
-            "   getEnseignantById(token : \""+ token +"\",  id_ens : \""+userId_ens+"\" ){" +
-            "          ... on Enseignant{" +
-            "           id_ens" +
-            "           repertoires{" +
-            "               nom" +
-            "               id_rep" +
-            "               questions{" +
-            "                intitule\n" +
-            "                choixUnique\n" +
-            "                reponsesBonnes\n" +
-            "                reponsesFausses\n" +
-            "                    time\n" +
-            "               }" +
-            "           }" +
-            "       }" +
-            "   }" +
-            "}"
-        const donnee = callAPI(query);
-
-        donnee.then((object) => {
-            ajouteQuestion(nomRepertoire, enonce);
-            let id_rep = getIdRepertory(object.data.getEnseignantById, userId_ens, nomRepertoire);
-            let questions = getQuestionByrepertoire(object.data.getEnseignantById, userId_ens, nomRepertoire);
-            questionadded(id_rep, questions, enonce, choix, reponsesBonnes, reponsesFausse, 10);
-            $('#modalPoll-1').modal('hide');
-        });
+		// faire en sorte que cette fonction renvoie false s'il y a erreur, pour pas faire la suite
+		let isRegistred = await enregistrementQuestion(enonce, choix, reponsesBonnes, reponsesFausse, 10, nomRepertoire);
+		
+		console.log("isRegistred",isRegistred)
+		
+		if(isRegistred) {
+			let token = getCookie("token");
+	        let userId_ens = getCookie("userId_ens")
+	        let query = "{" +
+	            "   getEnseignantById(token : \""+ token +"\",  id_ens : \""+userId_ens+"\" ){" +
+	            "          ... on Enseignant{" +
+	            "           id_ens" +
+	            "           repertoires{" +
+	            "               nom" +
+	            "               id_rep" +
+	            "               questions{" +
+	            "                intitule\n" +
+	            "                choixUnique\n" +
+	            "                reponsesBonnes\n" +
+	            "                reponsesFausses\n" +
+	            "                    time\n" +
+	            "               }" +
+	            "           }" +
+	            "       }" +
+	            "   }" +
+	            "}"
+	        const donnee = callAPI(query);
+	
+	        donnee.then((object) => {
+	            ajouteQuestion(nomRepertoire, enonce);
+	            let id_rep = getIdRepertory(object.data.getEnseignantById, userId_ens, nomRepertoire);
+	            let questions = getQuestionByrepertoire(object.data.getEnseignantById, userId_ens, nomRepertoire);
+	            questionadded(id_rep, questions, enonce, choix, reponsesBonnes, reponsesFausse, 10);
+	            $('#modalPoll-1').modal('hide');
+	        });
+		}
     }
 
 });
