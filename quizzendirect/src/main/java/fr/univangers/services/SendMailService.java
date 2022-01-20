@@ -20,13 +20,11 @@ public class SendMailService {
 	}
 	
 	public int sendEmail(String to, String mailBody, String mailTopic) throws MessagingException{
-		
 		MimeMessage simpleMailMessage = javaMailSender.createMimeMessage();
 		boolean multipart = true;
 		MimeMessageHelper helper = new MimeMessageHelper(simpleMailMessage,multipart,"utf-8");
 		helper.setText(mailBody, true);
 		helper.setTo(to);
-		helper.setFrom("lordariskoa@gmail.com");
 		helper.setSubject(mailTopic);
 		this.javaMailSender.send(simpleMailMessage);
 		

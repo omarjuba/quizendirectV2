@@ -103,31 +103,29 @@ async function closeQuizz(message){
 				++num;
 			}
 			MailBody = 	MailBody + "</fieldset>";
+				
+			// envoi du mail + contenu du mail au controlleur	
 			
-			// envoi du mail au controlleur				 
 			$.ajax({
-			  method: "POST",
-			  url: "getMail",
-			  contentType : "application/json",
-			  data: JSON.stringify(getCookie("studentmail"))
-			})
-			  .done(function( msg ) {
-			    
-			  });
-	
-			// envoi du contenu du mail au controlleur				 
-			$.ajax({
-			  method: "POST",
-			  url: "getBody",
-			  contentType : "application/json",
-			  data: JSON.stringify(MailBody)
-			})
-			  .done(function( msg ) {
-			    
-			  });
+		        type: "POST",
+		        contentType: "application/json",
+		        url: "/api/sendMail",
+		        data: JSON.stringify({
+						    "receiver": JSON.stringify(getCookie("studentmail")),
+							"content": JSON.stringify(MailBody),
+						}),
+		        dataType: 'text',
+		        cache: false,
+				success: function (data) {
+					alert("Le mail a été envoyé avec succès");
+		        },
+		        error: function (e) {
+		           alert("Le mail n'a pas pu être envoyé");
+        		}
+		    });
 		}
-			await sleep(2500);
-			document.location.href = "/";	
+		await sleep(10000);
+		document.location.href = "/";	
 	}
 }
 
